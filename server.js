@@ -86,5 +86,5 @@ app.use((err, req, res, next) => {
 
 
 // app.use('./frontend/build', express.static(path.join(__dirname, './frontend/build')));
-// app.use(express.static('./frontend/build'));
+app.use(express.static('./frontend/build'));
 server.listen(PORT, () => (console.log(`Server start on port ${PORT}`)))

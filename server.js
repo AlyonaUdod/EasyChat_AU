@@ -27,12 +27,12 @@ app.options('*', cors())
 let online = 0;
 let all = []
 
-app.get('/', (req, res) => {
-    Message.find({}, (err,users) => {
-        if (err) throw err;
-        res.json(users)
-    })
-})
+// app.get('/', (req, res) => {
+//     Message.find({}, (err,users) => {
+//         if (err) throw err;
+//         res.json(users)
+//     })
+// })
 
 io.on('connect', (client) => {
     console.log("User connected");

@@ -40,17 +40,17 @@ class Chat extends Component {
     }
     
 
-    getFirstMessages = () => {
-        axios.get('http://localhost:3003/')
-            .then( data => this.setState({messages: data.data}))
-            .catch( err => console.log(err))
-    }
+    // getFirstMessages = () => {
+    //     axios.get('http://localhost:3003/')
+    //         .then( data => this.setState({messages: data.data}))
+    //         .catch( err => console.log(err))
+    // }
 
     componentDidMount(){
 
-        axios.get('http://localhost:3003/')
-            .then( data => this.setState({messages: data.data}))
-            .catch( err => console.log(err))
+        // axios.get('http://localhost:3003/')
+        //     .then( data => this.setState({messages: data.data}))
+        //     .catch( err => console.log(err))
 
         window.socket.on("change-online", (online) => {
             console.log(online)

@@ -74,5 +74,5 @@ app.use((err, req, res, next) => {
       .json({err: '500'});
   })
 
-app.use(express.static('../build'));
+app.use(express.static('./frontend/build'));
 server.listen(PORT, () => (console.log(`Server start on port ${PORT}`)))

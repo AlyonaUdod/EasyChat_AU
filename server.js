@@ -75,16 +75,16 @@ app.use((err, req, res, next) => {
       .json({err: '500'});
   })
 
-if (process.env.NODE_ENV === 'production') {
-    // Serve any static files
-    app.use(express.static(path.join(__dirname, 'frontend/build')));
-    // Handle React routing, return all requests to React app
-    app.get('*', function(req, res) {
-      res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
-    });
-  }
+// if (process.env.NODE_ENV === 'production') {
+//     // Serve any static files
+//     app.use(express.static(path.join(__dirname, 'frontend/build')));
+//     // Handle React routing, return all requests to React app
+//     app.get('*', function(req, res) {
+//       res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
+//     });
+//   }
 
 
-// app.use('/frontend/build', express.static(__dirname +'/frontend/build'));
+// app.use('./frontend/build', express.static(path.join(__dirname, './frontend/build')));
 // app.use(express.static('./frontend/build'));
 server.listen(PORT, () => (console.log(`Server start on port ${PORT}`)))

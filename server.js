@@ -15,14 +15,14 @@ mongoose.Promise = global.Promise;
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
-mongoose.connect('mongodb://root:567234@ds121965.mlab.com:21965/it651');
+mongoose.connect('mongodb://admin:qwertyui90@ds157064.mlab.com:57064/sandbox_test');
 const Message = require('./schema');
-// app.get('/', (req, res) => {
-//     Message.find({}, (err,message) => {
-//         if (err) throw err;
-//         res.json(message)        
-//     })
-// })
+app.get('/', (req, res) => {
+    Message.find({}, (err,message) => {
+        if (err) throw err;
+        res.json(message)        
+    })
+})
 let online = 0;
 io.on('connection', (client) => {    
         console.log("User connected");

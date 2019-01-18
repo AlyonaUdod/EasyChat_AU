@@ -5,7 +5,7 @@ html, body, .app {
 }
 
  .container {
-  width: 90%;
+  width: 100%;
   max-width: 700px;
   margin: 10px auto;
 }

@@ -4,16 +4,14 @@ import {Grid, Form, Segment, Button, Header, Message, Icon} from 'semantic-ui-re
 
 export default class Login extends Component {
 
-  
-
   render() {
     return (
       <Grid textAlign='center' verticalAlign='middle' className='app'>
       <Grid.Column style={{
         maxWidth: 450
       }}>
-      <Header as='h2' icon color='purple' textAlign='center'>
-        <Icon name='user circle' color='purple'/>
+      <Header as='h2' icon color='orange' textAlign='center'>
+        <Icon name='user circle' color='orahge'/>
         Log in chat!
       </Header>
       <Form size='large' onSubmit={this.handlerSubmit}>
@@ -23,13 +21,14 @@ export default class Login extends Component {
             name='username'
             icon='user'
             iconPosition='left'
-            placeholder="Username"
+            placeholder="Enter Username"
             type='text'
             onChange={this.props.handlerChange}
             value={this.props.user}
+            required
             // className={this.handleInput(this.state.errors, 'email')}
             />
-          <Button color='purple' fluid size='large' onClick={this.props.closeModal}>
+          <Button color='orange' fluid size='large' onClick={this.props.closeModal}>
             Log In Chat
           </Button>
         </Segment>
@@ -40,11 +39,12 @@ export default class Login extends Component {
           {this.state.errors.map(el => <p key={el.message}>{el.message}</p>)}
         </Message>
       )} */}
-
-        {/* <Message>
-          Don't have an account?
-          {/* <NavLink to='/registration'>&nbsp;Registration</NavLink> */}
-        {/* </Message> */} 
+        {/* {this.props.error &&
+          <Message>
+          Enter user name, please!
+          {/* <NavLink to='/registration'>&nbsp;Registration</NavLink>  */}
+        {/* </Message>  } */}
+        
       </Grid.Column>
     </Grid>
     )

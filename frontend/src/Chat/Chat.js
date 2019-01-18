@@ -2,37 +2,61 @@ import React, { Component } from 'react';
 import { Container, MessageHeader, Segment, Comment, Input, Button, Header, Icon} from 'semantic-ui-react';
 import moment from 'moment';
 import socket from "socket.io-client";
+import uuidv4 from 'uuid'
+import axios from 'axios'
 
 window.socket = socket(window.location.origin, {
     path: "/chat/"
-});
+}, {transports: ['websocket']});
 
 class Chat extends Component {
     state = {
         online: 1,
         input:'',
-        messages:[],
+        messages: this.props.messages,
         author: this.props.user,
+        newMessage: true,
+        editMessage: {},
     }
 
-    componentDidMount(){
-        window.socket.on("all-messages", (docs) => {
-            console.log(docs)
-            this.setState({
-                messages: docs,
-            })
-        })
+    componentDidMount(){        
+        
+        // window.socket.on("all-messages", (docs) => {
+        //     console.log('aaaaaaaaaaaaaa2')
+        //     this.setState(prev => ({
+        //         messages: [...docs],
+        //     }))
+        // })
+
+        axios.get('http://localhost:3003/')
+            .then( data => this.setState({messages: data.data}))
+            .catch( err => console.log(err))
+
         window.socket.on("change-online", (online) => {
             this.setState({
                 online: online
             })
         })
+
         window.socket.on("new-message", (message) => {
+            // console.log('bbbbbb')
             this.setState (prev => ({
                 messages: [...prev.messages, message],
             }))
         });
+
+        window.socket.on("message-was-deleted", (id) => {
+            this.setState(prev =>({
+                messages: prev.messages.filter(el => el.messageId !== id)
+            }))
+        });
+        window.socket.on("message-was-edited", (editMess) => {
+            this.setState(prev =>({
+                messages: prev.messages.map(el => el.messageId === editMess.messageId ? editMess : el)
+            }))
+        });
     }
+
     
     handlerChange=(e)=>{
       this.setState({
@@ -41,17 +65,54 @@ class Chat extends Component {
     }
 
     sendMessage=()=>{
-        let message = {
+        if (this.state.newMessage) {
+           let message = {
             time: moment().format('LTS'),
             content: this.state.input,
             author: this.state.author,
+            messageId: uuidv4(),
+            }
+            this.setState(prev =>({
+                messages:[...prev.messages, message],
+                input: '',
+            }))
+            window.socket.emit("message", message);      
+        } else {
+            let editMess = {...this.state.editMessage, content: this.state.input}
+            // console.log(mess)
+            this.setState(prev =>({
+                messages: prev.messages.map(el => el.messageId === editMess.messageId ? editMess : el),
+                newMessage: true,
+                editMessage: {},
+                input: '',
+            }))
+            window.socket.emit("editMessage", editMess.messageId, editMess);    
         }
+    }
+
+    deleteMessage = (e) => {
+        let id = e.target.id
+        // console.log(id)
+        
+        window.socket.emit('deleteMessage', id)
         this.setState(prev =>({
-            messages:[...prev.messages, message],
-            input: '',
+            messages: prev.messages.filter(el => el.messageId !== id)
         }))
-        window.socket.emit("message", message);        
-}
+    }
+
+    editMessage = (e) => {
+        let id = e.target.id
+        // console.log(id)
+        let message = this.state.messages.find(el => el.messageId === id)
+        // console.log(message)
+        this.setState({
+            input: message.content,
+            newMessage: false,
+            editMessage: message,
+        })
+    }
+
+
 
 
   render() {
@@ -76,21 +137,36 @@ class Chat extends Component {
                 </Header.Subheader>
                 </Header>
             </Segment>
-            {/* ref={node =>{this.messageEnd = node}} */}
+            {/* className={this.state.author===el.author ? 'right' : null} 
+        ref={node =>{this.messageEnd = node}}
+        */}
+
              <Comment.Group className='messages'>
              {messages.map( el =>
-                 <Comment key={el.time+el.content}>
+                 <Comment key={el.messageId+el.content} id={el.messageId}>
                  <Comment.Avatar/>
-                 <Comment.Content>
+                 <Comment.Content className={this.state.author === el.author ? 'message__self' : null}>
                      <Comment.Author as='a'>
-                        {el.author}, {el.autorId}
+                        {el.author}
                      </Comment.Author>
                      <Comment.Metadata>
                         {el.time}
                      </Comment.Metadata>
-
+                    {/* <Button icon='edit'/>
+                    <Button icon='delete'/> */}
                   <Comment.Text>{el.content}</Comment.Text>
+                  {this.state.author === el.author ?  
+                        <Comment.Actions>
+                            <Comment.Action id={el.messageId} onClick={this.editMessage}> 
+                                <Icon name='edit' id={el.messageId}/> Edit
+                            </Comment.Action>
+                            <Comment.Action id={el.messageId} onClick={this.deleteMessage}> 
+                                <Icon name='delete' id={el.messageId}/> Delete
+                            </Comment.Action>         
+                        </Comment.Actions> : null}
+                   
                  </Comment.Content>
+
              </Comment>)}
 
              </Comment.Group>
@@ -112,7 +188,6 @@ class Chat extends Component {
                    />
                 <Button.Group icon widths='2'>
                     <Button color='orange' content='Add Reply' labelPosition='left' icon='edit' onClick={this.sendMessage} />
-
                 </Button.Group>
             </Segment>
 

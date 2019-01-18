@@ -17,32 +17,56 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb://admin:qwertyui90@ds157064.mlab.com:57064/sandbox_test');
 const Message = require('./schema');
-// app.get('/', (req, res) => {
-//     Message.find({}, (err,message) => {
-//         if (err) throw err;
-//         res.json(message)        
-//     })
-// })
+app.get('/', (req, res) => {
+    Message.find({}, (err,message) => {
+        if (err) throw err;
+        res.json(message)        
+    })
+})
 let online = 0;
 io.on('connection', (client) => {    
-        console.log("User connected");
-    //     let allMessages = Message.find();    
-    // client.broadcast.emit("all-masseges", allMessages);
-        console.log(++online);   
-    client.broadcast.emit("change-online", online);
+        console.log("User connected");        
+        console.log(++online);  
+        console.log(`Now in chat ${online} users.`); 
+        client.broadcast.emit("change-online", online)
+        // let allMes = Message.find();
+        // allMes.exec(function(err,docs){   // sort('-time').limit(30)
+        //         if (err) throw err;
+        //         console.log('Send message from DB');
+        //         client.broadcast.emit('all-messages', docs)
+        //         // console.log(docs)
+        //     })
+
+    // setTimeout(() => client.broadcast.emit("change-online", online), 1000);
     client.on("disconnect", () => {
         console.log(--online);
+        console.log(`Now in chat ${online} users.`); 
         client.broadcast.emit("change-online", online);
-        });
+    });
+
     client.on("message", (message) => {
-        console.log(message);
+        // console.log(message);
         Message.create(message, err => {
             if(err) return console.error(err);
             client.broadcast.emit("new-message", message);
-        });     
+        }); 
     });
     client.on("typing", (is) => {
         client.broadcast.emit("somebody-typing", is);
+    })
+    client.on('deleteMessage', (id) => {
+        Message.findOneAndRemove({messageId: id}, err => {
+            if (err) throw err
+            console.log('Message succsessfully delete!')
+            client.broadcast.emit("message-was-deleted", id);
+        })
+    })
+    client.on("editMessage", (id, editMess) => {
+        Message.findOneAndUpdate({messageId: id}, editMess, err => {
+            if (err) throw err
+            console.log('Message succsessfully edit!')
+            client.broadcast.emit("message-was-edited", editMess);
+        })
     })
 });
 app.use(express.static('./frontend/build'));

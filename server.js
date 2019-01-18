@@ -36,13 +36,11 @@ io.on('connection', (client) => {
         });
     client.on("message", (message) => {
         console.log(message);
-        client.broadcast.emit("new-message", message);
-        
-        const newMessage = Message(message)
-        console.log(newMessage);
-        newMessage.save();
-        
-        });
+        Message.create(message, err => {
+            if(err) return console.error(err);
+            client.broadcast.emit("new-message", message);
+        });     
+    });
     client.on("typing", (is) => {
         client.broadcast.emit("somebody-typing", is);
     })

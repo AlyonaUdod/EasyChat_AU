@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, MessageHeader, Segment, Comment, Input, Button, Header, Icon} from 'semantic-ui-react';
 import moment from 'moment';
 import socket from "socket.io-client";
-import axios from "axios";
+
 window.socket = socket(window.location.origin, {
     path: "/chat/"
 });
@@ -12,53 +12,50 @@ class Chat extends Component {
         online: 1,
         input:'',
         messages:[],
+        author: this.props.user,
     }
 
     componentDidMount(){
-        // axios.get('http://localhost:3003/')
-        //     .then( data => this.setState({messages: data.data}))
-        //     .catch( err => console.log(err))
-
+        window.socket.on("all-messages", (docs) => {
+            console.log(docs)
+            this.setState({
+                messages: docs,
+            })
+        })
         window.socket.on("change-online", (online) => {
             this.setState({
                 online: online
             })
         })
-        window.socket.on("all-masseges", (data) => {
-            this.setState({
-                messages: data.data
-            })
-        })
         window.socket.on("new-message", (message) => {
-            // this.props.getMessage(message);
             this.setState (prev => ({
                 messages: [...prev.messages, message],
             }))
         });
     }
     
-
     handlerChange=(e)=>{
       this.setState({
           input:e.target.value
       })
     }
 
-    recMessage=()=>{
-        let content = {
+    sendMessage=()=>{
+        let message = {
             time: moment().format('LTS'),
-            message:this.state.input,
+            content: this.state.input,
+            author: this.state.author,
         }
         this.setState(prev =>({
-            messages:[...prev.messages,content],
+            messages:[...prev.messages, message],
             input: '',
         }))
-        window.socket.emit("message", content);        
+        window.socket.emit("message", message);        
 }
 
 
   render() {
-      const {input , messages}= this.state;
+      const {input, messages}= this.state;
     return (
       <div className='container'>
         <Container fluid>
@@ -79,20 +76,20 @@ class Chat extends Component {
                 </Header.Subheader>
                 </Header>
             </Segment>
-
+            {/* ref={node =>{this.messageEnd = node}} */}
              <Comment.Group className='messages'>
              {messages.map( el =>
-                 <Comment>
+                 <Comment key={el.time+el.content}>
                  <Comment.Avatar/>
                  <Comment.Content>
                      <Comment.Author as='a'>
-                         author
+                        {el.author}, {el.autorId}
                      </Comment.Author>
                      <Comment.Metadata>
                         {el.time}
                      </Comment.Metadata>
 
-                  <Comment.Text>{el.message}</Comment.Text>
+                  <Comment.Text>{el.content}</Comment.Text>
                  </Comment.Content>
              </Comment>)}
 
@@ -111,14 +108,13 @@ class Chat extends Component {
                     labelPosition='left'
                     placeholder='Write your message'
                     onChange={this.handlerChange}
-                    value={this.state.input}
+                    value={input}
                    />
                 <Button.Group icon widths='2'>
-                    <Button color='orange' content='Add Reply' labelPosition='left' icon='edit' onClick={this.recMessage} />
-                    {/* <Button color='teal' content='Upload media' labelPosition='right' icon='cloud upload' onClick={this.toggleModal}/> */}
+                    <Button color='orange' content='Add Reply' labelPosition='left' icon='edit' onClick={this.sendMessage} />
+
                 </Button.Group>
             </Segment>
-
 
 
         </Container>

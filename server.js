@@ -26,28 +26,20 @@ const Message = require('./schema');
 let online = 0;
 io.on('connection', (client) => {    
         console.log("User connected");
-        let allMes = Message.find();
-        allMes.exec(function(err,docs){   // sort('-time').limit(30)
-            if (err) throw err;
-            console.log('Send message from DB');
-            client.broadcast.emit('all-messages', docs);
-            console.log(docs)
-        })
-        console.log(++online);  
-        console.log(`Now in chat ${online} users.`); 
+    //     let allMessages = Message.find();    
+    // client.broadcast.emit("all-masseges", allMessages);
+        console.log(++online);   
     client.broadcast.emit("change-online", online);
     client.on("disconnect", () => {
         console.log(--online);
-        console.log(`Now in chat ${online} users.`); 
         client.broadcast.emit("change-online", online);
-    });
+        });
     client.on("message", (message) => {
-        // console.log(message);
-
+        console.log(message);
         Message.create(message, err => {
             if(err) return console.error(err);
             client.broadcast.emit("new-message", message);
-        }); 
+        });     
     });
     client.on("typing", (is) => {
         client.broadcast.emit("somebody-typing", is);

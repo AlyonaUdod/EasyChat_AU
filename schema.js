@@ -3,8 +3,8 @@ let Schema = mongoose.Schema;
 
 let message = new Schema({
   author: String,   
-  content: String,
-  time: String,
+  message: String,
+  time: String
 });
 
 const Message = mongoose.model('message', message);

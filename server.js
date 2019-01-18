@@ -17,12 +17,12 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb://admin:qwertyui90@ds157064.mlab.com:57064/sandbox_test');
 const Message = require('./schema');
-app.get('/', (req, res) => {
-    Message.find({}, (err,message) => {
-        if (err) throw err;
-        res.json(message)        
-    })
-})
+// app.get('/', (req, res) => {
+//     Message.find({}, (err,message) => {
+//         if (err) throw err;
+//         res.json(message)        
+//     })
+// })
 let online = 0;
 io.on('connection', (client) => {    
         console.log("User connected");

@@ -4,8 +4,8 @@ import moment from 'moment';
 import socket from "socket.io-client";
 import uuidv4 from 'uuid'
 // import axios from 'axios'
-import * as Scroll from 'react-scroll';
-import { Link, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
+// import * as Scroll from 'react-scroll';
+// import { Link, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
  
 
 window.socket = socket(window.location.origin, {

@@ -3,6 +3,7 @@ import './App.css';
 import Chat from './Chat/Chat';
 import Login from './Auth/Login'
 import socket from "socket.io-client";
+import axios from 'axios'
 
 window.socket = socket(window.location.origin, {
     path: "/chat/"
@@ -38,25 +39,32 @@ class App extends Component {
 
     componentDidMount(){
       console.log('aaaaaaaaaaaaaa1')
+
+      window.socket.on("change-online", (online) => {
+        this.setState({
+            online: online
+        })
+     })
+     
       window.socket.once("all-messages", (docs) => {
           console.log('aaaaaaaaaaaaaa2')
           this.setState(prev => ({
               messages: [...docs],
           }))
       })
-    //   window.socket.on("change-online", (online) => {
-    //     this.setState({
-    //         online: online
-    //     })
-    //  })
+
+      // axios.get('http://localhost:3003/')
+      //       .then( data => this.setState({messages: data.data}))
+      //       .catch( err => console.log(err))
+
     }
   
   render() {
-     const {modal} = this.state
+     const {modal, online, messages} = this.state
     return (
   
       <div className="App">
-        {modal ? <Login closeModal={this.toggleModal} user={this.state.user} handlerChange={this.handlerChange}error={this.state.error}/> : <Chat user={this.state.user} online={this.state.online} messages={this.state.messages}/> }
+        {modal ? <Login closeModal={this.toggleModal} user={this.state.user} handlerChange={this.handlerChange}error={this.state.error}/> : messages.length === 0 && online === 0 ? <div> Waiting</div> : <Chat user={this.state.user} online={this.state.online} messages={this.state.messages}/> }
       </div>
     );
   }

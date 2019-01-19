@@ -5,13 +5,13 @@ html, body, .app {
 }
 
  .container {
-  width: 100%;
+  width: 90%;
   max-width: 700px;
   margin: 10px auto;
 }
 .messages {
   height: 60vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   min-width: 100%;
 }
 .message__form {

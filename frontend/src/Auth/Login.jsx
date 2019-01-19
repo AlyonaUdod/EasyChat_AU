@@ -11,7 +11,7 @@ export default class Login extends Component {
         maxWidth: 450
       }}>
       <Header as='h2' icon color='orange' textAlign='center'>
-        <Icon name='user circle' color='orahge'/>
+        <Icon name='user circle' color='orange'/>
         Log in chat!
       </Header>
       <Form size='large' onSubmit={this.handlerSubmit}>

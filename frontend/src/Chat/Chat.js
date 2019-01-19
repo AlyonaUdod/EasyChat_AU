@@ -3,7 +3,10 @@ import { Container, MessageHeader, Segment, Comment, Input, Button, Header, Icon
 import moment from 'moment';
 import socket from "socket.io-client";
 import uuidv4 from 'uuid'
-import axios from 'axios'
+// import axios from 'axios'
+import * as Scroll from 'react-scroll';
+import { Link, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
+ 
 
 window.socket = socket(window.location.origin, {
     path: "/chat/"
@@ -11,7 +14,7 @@ window.socket = socket(window.location.origin, {
 
 class Chat extends Component {
     state = {
-        online: 1,
+        online: this.props.online,
         input:'',
         messages: this.props.messages,
         author: this.props.user,
@@ -20,7 +23,6 @@ class Chat extends Component {
     }
 
     componentDidMount(){        
-        
         // window.socket.on("all-messages", (docs) => {
         //     console.log('aaaaaaaaaaaaaa2')
         //     this.setState(prev => ({
@@ -37,6 +39,9 @@ class Chat extends Component {
                 online: online
             })
         })
+
+        this.scrollToBottom()
+        // scroll.scrollToBottom();
 
         window.socket.on("new-message", (message) => {
             // console.log('bbbbbb')
@@ -57,7 +62,14 @@ class Chat extends Component {
         });
     }
 
-    
+    scrollToBottom = () => {
+        this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+      }
+      
+    componentDidUpdate() {
+        this.scrollToBottom();
+      }
+
     handlerChange=(e)=>{
       this.setState({
           input:e.target.value
@@ -117,7 +129,8 @@ class Chat extends Component {
 
   render() {
       const {input, messages}= this.state;
-    return (
+      if (messages.length !== 0) {
+        return (
       <div className='container'>
         <Container fluid>
 
@@ -142,7 +155,11 @@ class Chat extends Component {
         */}
 
              <Comment.Group className='messages'>
-             {messages.map( el =>
+            {/* <div ref={node =>{this.messageEnd = node}}> */}
+
+            {/* </div> */}
+             {messages.length !== 0 ? messages.map( el =>
+              <div ref={node =>{this.messageEnd = node}}>
                  <Comment key={el.messageId+el.content} id={el.messageId}>
                  <Comment.Avatar/>
                  <Comment.Content className={this.state.author === el.author ? 'message__self' : null}>
@@ -167,8 +184,12 @@ class Chat extends Component {
                    
                  </Comment.Content>
 
-             </Comment>)}
-
+             </Comment>
+                </div>
+              ) : <div> Waiting</div>}
+             <div style={{ float:"left", clear: "both" }}
+                ref={(el) => { this.messagesEnd = el; }}>
+            </div>
              </Comment.Group>
            </Segment>
 
@@ -194,7 +215,12 @@ class Chat extends Component {
 
         </Container>
       </div>
-    )
+    )   
+      } else {
+          return (
+              <div>loooo</div>
+          )
+      }
   }
 }
 

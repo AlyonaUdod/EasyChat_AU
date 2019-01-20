@@ -49,7 +49,7 @@ class App extends Component {
         })
      })
 
-      window.socket.once("all-messages", (docs) => {
+      window.socket.on("all-messages", (docs) => {
           console.log('aaaaaaaaaaaaaa2')
           this.setState(prev => ({
               messages: [...docs],

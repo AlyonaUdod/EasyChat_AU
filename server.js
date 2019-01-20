@@ -51,8 +51,8 @@ io.on('connection', (client) => {
             client.broadcast.emit("new-message", message);
         }); 
     });
-    client.on("typing", (is) => {
-        client.broadcast.emit("somebody-typing", is);
+    client.on("typing", (data) => {
+        client.broadcast.emit("somebody-typing", data);
     })
     client.on('deleteMessage', (id) => {
         Message.findOneAndRemove({messageId: id}, err => {

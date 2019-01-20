@@ -20,19 +20,10 @@ class Chat extends Component {
         author: this.props.user,
         newMessage: true,
         editMessage: {},
+        typingUser: '',
     }
 
     componentDidMount(){        
-        // window.socket.on("all-messages", (docs) => {
-        //     console.log('aaaaaaaaaaaaaa2')
-        //     this.setState(prev => ({
-        //         messages: [...docs],
-        //     }))
-        // })
-
-        // axios.get('http://localhost:3003/')
-        //     .then( data => this.setState({messages: data.data}))
-        //     .catch( err => console.log(err))
 
         window.socket.on("change-online", (online) => {
             this.setState({
@@ -41,7 +32,6 @@ class Chat extends Component {
         })
 
         this.scrollToBottom()
-        // scroll.scrollToBottom();
 
         window.socket.on("new-message", (message) => {
             // console.log('bbbbbb')
@@ -60,6 +50,11 @@ class Chat extends Component {
                 messages: prev.messages.map(el => el.messageId === editMess.messageId ? editMess : el)
             }))
         });
+        window.socket.on('somebody-typing',(data) => {
+            this.setState({
+                typingUser: data,
+            })
+        })
     }
 
     scrollToBottom = () => {
@@ -74,7 +69,9 @@ class Chat extends Component {
       this.setState({
           input:e.target.value
       })
+         window.socket.emit('typing', this.state.author)  
     }
+
 
     sendMessage=()=>{
         if (this.state.newMessage) {
@@ -87,6 +84,7 @@ class Chat extends Component {
             this.setState(prev =>({
                 messages:[...prev.messages, message],
                 input: '',
+                typingUser: '',
             }))
             window.socket.emit("message", message);      
         } else {
@@ -128,7 +126,7 @@ class Chat extends Component {
 
 
   render() {
-      const {input, messages}= this.state;
+      const {input, messages, typingUser}= this.state;
       if (messages.length !== 0) {
         return (
       <div className='container'>
@@ -190,6 +188,8 @@ class Chat extends Component {
             //  style={{ float:"left", clear: "both" }}
                 ref={(el) => { this.messagesEnd = el; }}>
             </div>
+
+            <div style={{fontStyle: 'italic'}}>{typingUser && `${typingUser} typing a message...`}</div>
              </Comment.Group>
            </Segment>
 

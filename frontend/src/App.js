@@ -37,6 +37,7 @@ class App extends Component {
           modal: false,
         }))
     }
+    
   }
 
   componentWillMount(){
@@ -54,7 +55,7 @@ class App extends Component {
           online: online
       })
    })
-
+     
 
     //  setTimeout(() => {
     //    if (this.state.messages.length === 0) {

@@ -49,12 +49,14 @@ class App extends Component {
         })
      })
 
-      window.socket.on("all-messages", (docs) => {
-          console.log('aaaaaaaaaaaaaa2')
-          this.setState(prev => ({
-              messages: [...docs],
-          }))
-      })
+     setTimeout(() => {
+          window.socket.on("all-messages", (docs) => {
+              console.log('aaaaaaaaaaaaaa2')
+              this.setState(prev => ({
+                  messages: [...docs],
+              }))
+          })
+    }, 3000)
 
     //  setTimeout(() => {
     //    if (this.state.messages.length === 0) {

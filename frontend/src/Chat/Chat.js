@@ -34,9 +34,9 @@ class Chat extends Component {
         this.scrollToBottom()
 
         window.socket.on("new-message", (message) => {
-            // console.log('bbbbbb')
             this.setState (prev => ({
                 messages: [...prev.messages, message],
+                typingUser: '',
             }))
         });
 
@@ -84,7 +84,6 @@ class Chat extends Component {
             this.setState(prev =>({
                 messages:[...prev.messages, message],
                 input: '',
-                typingUser: '',
             }))
             window.socket.emit("message", message);      
         } else {

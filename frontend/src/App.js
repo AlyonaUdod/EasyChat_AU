@@ -4,6 +4,7 @@ import Chat from './Chat/Chat';
 import Login from './Auth/Login'
 import socket from "socket.io-client";
 // import axios from 'axios'
+import moment from 'moment'
 
 window.socket = socket(window.location.origin, {
     path: "/chat/"
@@ -27,22 +28,14 @@ class App extends Component {
 
   toggleModal = () => {
     if (this.state.messages.length !== 0) {
-        if (this.state.user) {
         this.setState(prev => ({
           modal: false
         }))
-      } else {
-        this.setState(prev => ({
-          error: true
-        }))
-      }
     } else {
-      window.socket.once("all-messages", (docs) => {
-        console.log('aa444')
         this.setState(prev => ({
-            messages: [...docs],
+          messages: [...prev.messages, {time: moment().format('LTS'), user: 'Admin', content: 'Sorry, can\'t load previos messages'}],
+          modal: false,
         }))
-    })
     }
     
   }
@@ -63,16 +56,16 @@ class App extends Component {
           }))
       })
 
-     setTimeout(() => {
-       if (this.state.messages.length === 0) {
-          window.socket.once("all-messages", (docs) => {
-            console.log('aa333')
-            this.setState(prev => ({
-                messages: [...docs],
-            }))
-        })
-       }
-     }, 2000);
+    //  setTimeout(() => {
+    //    if (this.state.messages.length === 0) {
+    //       window.socket.once("all-messages", (docs) => {
+    //         console.log('aa333')
+    //         this.setState(prev => ({
+    //             messages: [...docs],
+    //         }))
+    //     })
+    //    }
+    //  }, 2000);
 
     }
   

@@ -156,11 +156,10 @@ class Chat extends Component {
 
              <Comment.Group className='messages'>
             {/* <div ref={node =>{this.messageEnd = node}}> */}
-
             {/* </div> */}
              {messages.length !== 0 ? messages.map( el =>
-              <div ref={node =>{this.messageEnd = node}}>
-                 <Comment key={el.messageId+el.content} id={el.messageId}>
+              <div ref={node =>{this.messageEnd = node}} key={el.messageId+el.content}>
+                 <Comment id={el.messageId}  >
                  <Comment.Avatar/>
                  <Comment.Content className={this.state.author === el.author ? 'message__self' : null}>
                      <Comment.Author as='a'>
@@ -187,7 +186,8 @@ class Chat extends Component {
              </Comment>
                 </div>
               ) : <div> Waiting</div>}
-             <div style={{ float:"left", clear: "both" }}
+             <div 
+            //  style={{ float:"left", clear: "both" }}
                 ref={(el) => { this.messagesEnd = el; }}>
             </div>
              </Comment.Group>

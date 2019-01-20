@@ -158,7 +158,7 @@ class Chat extends Component {
             {/* <div ref={node =>{this.messageEnd = node}}> */}
             {/* </div> */}
              {messages.length !== 0 ? messages.map( el =>
-              <div ref={node =>{this.messageEnd = node}} key={el.messageId+el.content}>
+              <div ref={node =>{this.messageEnd = node}} key={el.messageId+el.content} className='single-mes'>
                  <Comment id={el.messageId}  >
                  <Comment.Avatar/>
                  <Comment.Content className={this.state.author === el.author ? 'message__self' : null}>

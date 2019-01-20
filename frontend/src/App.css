@@ -36,3 +36,7 @@ html, body, .App {
 .message__image {
   padding: 1rem;
 }
+
+.single-mes {
+  margin: 1rem 0;
+}

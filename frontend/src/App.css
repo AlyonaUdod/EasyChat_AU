@@ -11,7 +11,7 @@ html, body, .app {
 }
 .messages {
   height: 60vh;
-  overflow-y: auto;
+  overflow-y: scroll;
   min-width: 100%;
 }
 .message__form {

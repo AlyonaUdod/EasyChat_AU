@@ -3,7 +3,7 @@ import './App.css';
 import Chat from './Chat/Chat';
 import Login from './Auth/Login'
 import socket from "socket.io-client";
-import axios from 'axios'
+// import axios from 'axios'
 
 window.socket = socket(window.location.origin, {
     path: "/chat/"
@@ -26,15 +26,25 @@ class App extends Component {
   }
 
   toggleModal = () => {
-    if (this.state.user) {
-      this.setState(prev => ({
-        modal: false
-      }))
+    if (this.state.messages.length !== 0) {
+        if (this.state.user) {
+        this.setState(prev => ({
+          modal: false
+        }))
+      } else {
+        this.setState(prev => ({
+          error: true
+        }))
+      }
     } else {
-      this.setState(prev => ({
-        error: true
-      }))
+      window.socket.once("all-messages", (docs) => {
+        console.log('aa444')
+        this.setState(prev => ({
+            messages: [...docs],
+        }))
+    })
     }
+    
   }
 
     componentDidMount(){
@@ -45,7 +55,7 @@ class App extends Component {
             online: online
         })
      })
-     
+
       window.socket.once("all-messages", (docs) => {
           console.log('aaaaaaaaaaaaaa2')
           this.setState(prev => ({
@@ -53,9 +63,16 @@ class App extends Component {
           }))
       })
 
-      // axios.get('http://localhost:3003/')
-      //       .then( data => this.setState({messages: data.data}))
-      //       .catch( err => console.log(err))
+     setTimeout(() => {
+       if (this.state.messages.length === 0) {
+          window.socket.once("all-messages", (docs) => {
+            console.log('aa333')
+            this.setState(prev => ({
+                messages: [...docs],
+            }))
+        })
+       }
+     }, 2000);
 
     }
   

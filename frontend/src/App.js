@@ -39,24 +39,21 @@ class App extends Component {
     }
   }
 
-  getMessages = () => {
-    window.socket.on("all-messages", (docs) => {
-      console.log('aaaaaaaaaaaaaa2')
-      this.setState(prev => ({
-          messages: [...docs],
-      }))
-  })
-  }
+  componentWillMount(){
+    console.log('aaaaaaaaaaaaaa1')
 
-    componentDidMount(){
-      console.log('aaaaaaaaaaaaaa1')
-
-      window.socket.on("change-online", (online) => {
-          this.setState({
-              online: online
-          }, this.getMessages())
+    window.socket.on("change-online", (online) => {
+      this.setState({
+          online: online
       })
+   })
 
+    window.socket.once("all-messages", (docs) => {
+      console.log('aaaaaaaaaaaaaa2')
+        this.setState(prev => ({
+            messages: [...docs],
+        }))
+    })
 
 
     //  setTimeout(() => {

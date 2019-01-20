@@ -37,26 +37,27 @@ class App extends Component {
           modal: false,
         }))
     }
-    
+  }
+
+  getMessages = () => {
+    window.socket.on("all-messages", (docs) => {
+      console.log('aaaaaaaaaaaaaa2')
+      this.setState(prev => ({
+          messages: [...docs],
+      }))
+  })
   }
 
     componentDidMount(){
       console.log('aaaaaaaaaaaaaa1')
 
       window.socket.on("change-online", (online) => {
-        this.setState({
-            online: online
-        })
-     })
+          this.setState({
+              online: online
+          }, this.getMessages())
+      })
 
-     setTimeout(() => {
-          window.socket.on("all-messages", (docs) => {
-              console.log('aaaaaaaaaaaaaa2')
-              this.setState(prev => ({
-                  messages: [...docs],
-              }))
-          })
-    }, 3000)
+
 
     //  setTimeout(() => {
     //    if (this.state.messages.length === 0) {

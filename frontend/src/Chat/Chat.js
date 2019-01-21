@@ -3,6 +3,7 @@ import { Container, MessageHeader, Segment, Comment, Input, Button, Header, Icon
 import moment from 'moment';
 import socket from "socket.io-client";
 import uuidv4 from 'uuid'
+import md5 from 'md5'
 // import axios from 'axios'
 // import * as Scroll from 'react-scroll';
 // import { Link, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
@@ -17,7 +18,9 @@ class Chat extends Component {
         online: this.props.online,
         input:'',
         messages: this.props.messages,
-        author: this.props.user,
+        author: {
+            name: this.props.user,
+            avatar: `http://gravatar.com/avatar/${md5(this.props.user)}?d=identicon`},
         newMessage: true,
         editMessage: {},
         typingUser: '',
@@ -78,7 +81,7 @@ class Chat extends Component {
            let message = {
             time: moment().format('LTS'),
             content: this.state.input,
-            author: this.state.author,
+            author: this.state.author.name,
             messageId: uuidv4(),
             }
             this.setState(prev =>({
@@ -153,7 +156,7 @@ class Chat extends Component {
              {messages.length !== 0 ? messages.map( el =>
               <div ref={node =>{this.messageEnd = node}} key={el.messageId+el.content} className='single-mes'>
                  <Comment id={el.messageId}  >
-                 <Comment.Avatar/>
+                 <Comment.Avatar src={`http://gravatar.com/avatar/${md5(el.author)}?d=identicon`}/>
                  <Comment.Content className={this.state.author === el.author ? 'message__self' : null}>
                      <Comment.Author as='a'>
                         {el.author}
@@ -164,7 +167,7 @@ class Chat extends Component {
                     {/* <Button icon='edit'/>
                     <Button icon='delete'/> */}
                   <Comment.Text>{el.content}</Comment.Text>
-                  {this.state.author === el.author ?  
+                  {this.state.author.name === el.author ?  
                         <Comment.Actions>
                             <Comment.Action id={el.messageId} onClick={this.editMessage}> 
                                 <Icon name='edit' id={el.messageId}/> Edit

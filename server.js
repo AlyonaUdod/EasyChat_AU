@@ -53,7 +53,7 @@ client.on('new-user', (user) => {
     })  
 })
 client.on("disconnect", () => {
-    console.log(--online);
+    console.log(online > 0 ? --online : null);
     console.log(`Now in chat ${online} users.`); 
     client.broadcast.emit("change-online", online);
 });

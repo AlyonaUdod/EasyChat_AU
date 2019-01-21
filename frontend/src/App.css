@@ -7,12 +7,17 @@ html, body, .App {
   /* background-color: #eee; */
 }
 
-
+.chatWrapper {
+  display: flex;
+  width: 90%;
+  max-width: 900px;
+  margin: 10px auto;
+ }
 
  .container {
   width: 90%;
   max-width: 700px;
-  margin: 10px auto;
+  /* margin: 10px auto; */
 }
 .messages {
   height: 60vh;
@@ -39,4 +44,9 @@ html, body, .App {
 
 .single-mes {
   margin: 1rem 0;
+}
+
+.userPanelContainer {
+  width: 25%;
+  margin-top: 15px;
 }

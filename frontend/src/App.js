@@ -4,6 +4,7 @@ import Chat from './Chat/Chat';
 import Login from './Auth/Login'
 import socket from "socket.io-client";
 import moment from 'moment'
+import UserPanel from './UserPanel/UserPanel';
 
 window.socket = socket(window.location.origin, {
     path: "/chat/"
@@ -17,6 +18,7 @@ class App extends Component {
     error: false,
     online: 0,
     messages: [],
+    users: [],
   }
 
   handlerChange = (e) => {
@@ -38,6 +40,11 @@ class App extends Component {
     }
   }
 
+  onClick = () => {
+    this.uniqueNames(this.state.messages)
+    this.toggleModal()
+  }
+
   componentWillMount(){ 
     
     window.socket.on("all-messages", (obj) => {
@@ -52,30 +59,44 @@ class App extends Component {
       data: 'succsess',
     }
     window.socket.emit('new-user', user)
-
     console.log('aaaaaaaaaaaaaa1')
-   
   }
 
   componentDidMount() {
     window.socket.on("change-online", (online) => {
       this.setState({
           online: online
-      })
-   })
+        })
+    })
   }
 
   componentWillUnmount(){
     window.socket.emit('disconnect')
   }
 
+  uniqueNames=(arr)=> {
+    let  obj = {};
+      for (let i = 0; i < arr.length; i++) {
+      let str = arr[i].author;
+      obj[str] = true; // запомнить строку в виде свойства объекта
+    }
+    let result = [...Object.keys(obj)];
+    if (!result.includes(this.state.user)) {
+      result.push(this.state.user)
+    }
+    this.setState({
+      users: result,
+    })
+  }
+
   
   render() {
-     const {modal, online, messages} = this.state
+     const {modal, online, messages, users} = this.state
     return (
   
       <div className="App">
-        {modal ? <Login closeModal={this.toggleModal} user={this.state.user} handlerChange={this.handlerChange}error={this.state.error}/> : messages.length === 0 && online === 0 ? <div> Waiting </div> : <Chat user={this.state.user} online={this.state.online} messages={this.state.messages}/> }
+        {modal ? <Login closeModal={this.onClick} user={this.state.user} handlerChange={this.handlerChange}error={this.state.error}/> : messages.length === 0 && online === 0 ? <div> Waiting </div> : <div className='chatWrapper'>
+          <UserPanel users={users}/><Chat user={this.state.user} online={this.state.online} messages={this.state.messages}/> </div>}
       </div>
     );
   }

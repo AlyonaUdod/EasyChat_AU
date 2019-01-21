@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {Grid, Form, Segment, Button, Header, Message, Icon} from 'semantic-ui-react'
-// import firebase from '../firebase'
 
 export default class Login extends Component {
 
@@ -26,7 +25,6 @@ export default class Login extends Component {
             onChange={this.props.handlerChange}
             value={this.props.user}
             required
-            // className={this.handleInput(this.state.errors, 'email')}
             />
           <Button color='orange' fluid size='large' onClick={this.props.closeModal}>
             Log In Chat

@@ -1,4 +1,4 @@
-html, body, .App {
+html, body, .App, .app {
   min-height: 90vh;
   max-height: 90vh;
   /* height: none; */
@@ -35,7 +35,7 @@ html, body, .App {
   z-index: 200;
 }
 .message__self {
-  border-left: 2px solid orange;
+  border-left: 2px solid rgb(255, 165, 0);
   padding-left: .5rem;
 }
 .message__image {

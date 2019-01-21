@@ -1,17 +1,9 @@
 import React, { Component } from 'react';
 import { Container, MessageHeader, Segment, Comment, Input, Button, Header, Icon} from 'semantic-ui-react';
 import moment from 'moment';
-import socket from "socket.io-client";
 import uuidv4 from 'uuid'
 import md5 from 'md5'
-// import axios from 'axios'
-// import * as Scroll from 'react-scroll';
-// import { Link, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
- 
 
-// window.socket = socket(window.location.origin, {
-//     path: "/chat/"
-// }, {transports: ['websocket']});
 
 class Chat extends Component {
     state = {
@@ -121,8 +113,6 @@ class Chat extends Component {
     }
 
 
-
-
   render() {
       const {input, messages, typingUser}= this.state;
       if (messages.length !== 0) {
@@ -142,13 +132,10 @@ class Chat extends Component {
                     marginBottom: 0
                 }}>
                 <Header.Subheader>
-                    Our Chat / Online Users: {this.state.online}
+                    Online Users: {this.state.online}
                 </Header.Subheader>
                 </Header>
             </Segment>
-            {/* className={this.state.author===el.author ? 'right' : null} 
-        ref={node =>{this.messageEnd = node}}
-        */}
 
              <Comment.Group className='messages'>
             {/* <div ref={node =>{this.messageEnd = node}}> */}
@@ -157,7 +144,7 @@ class Chat extends Component {
               <div ref={node =>{this.messageEnd = node}} key={el.messageId+el.content} className='single-mes'>
                  <Comment id={el.messageId}  >
                  <Comment.Avatar src={`http://gravatar.com/avatar/${md5(el.author)}?d=identicon`}/>
-                 <Comment.Content className={this.state.author === el.author ? 'message__self' : null}>
+                 <Comment.Content className={this.state.author.name === el.author ? 'message__self' : null}>
                      <Comment.Author as='a'>
                         {el.author}
                      </Comment.Author>
@@ -185,7 +172,7 @@ class Chat extends Component {
             <div ref={(el) => { this.messagesEnd = el; }}>
             </div>
 
-            <div style={{fontStyle: 'italic', marginLeft: 10}}>{typingUser && `${typingUser} typing a message...`}</div>
+            <div style={{fontStyle: 'italic', marginLeft: 10}}>{typingUser && `${typingUser.name} typing a message...`}</div>
              </Comment.Group>
            </Segment>
 

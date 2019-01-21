@@ -52,7 +52,7 @@ class App extends Component {
   componentWillMount(){ 
     
     window.socket.on("all-messages", (obj) => {
-      console.log('aaaaaaaaaaaaaa2')
+      // console.log('aaaaaaaaaaaaaa2')
         this.setState({
             messages: obj.docs,
             online: obj.online,
@@ -65,7 +65,7 @@ class App extends Component {
       data: 'succsess',
     }
     window.socket.emit('new-user', user)
-    console.log('aaaaaaaaaaaaaa1')
+    // console.log('aaaaaaaaaaaaaa1')
   }
 
   componentDidMount() {

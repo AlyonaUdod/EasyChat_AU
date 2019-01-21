@@ -15,7 +15,7 @@ class Chat extends Component {
         messages: this.props.messages,
         author: {
             name: this.props.user,
-            avatar: `http://gravatar.com/avatar/${md5(this.props.user)}?d=identicon`},
+            avatar: `https://gravatar.com/avatar/${md5(this.props.user)}?d=identicon`},
         newMessage: true,
         editMessage: {},
         typingUser: '',
@@ -90,6 +90,7 @@ class Chat extends Component {
                 this.setState(prev =>({
                     messages:[...prev.messages, message],
                     input: '',
+                    showEmoji: false,
                 }))
                 window.socket.emit("message", message);   
             }    
@@ -100,6 +101,7 @@ class Chat extends Component {
                 newMessage: true,
                 editMessage: {},
                 input: '',
+                showEmoji: false,
             }))
             window.socket.emit("editMessage", editMess.messageId, editMess);    
         }
@@ -180,7 +182,7 @@ class Chat extends Component {
              {messages.length !== 0 ? messages.map( el =>
               <div ref={node =>{this.messageEnd = node}} key={el.messageId+el.content} className='single-mes'>
                  <Comment id={el.messageId}  >
-                 <Comment.Avatar src={`http://gravatar.com/avatar/${md5(el.author)}?d=identicon`}/>
+                 <Comment.Avatar src={`https://gravatar.com/avatar/${md5(el.author)}?d=identicon`}/>
                  <Comment.Content className={this.state.author.name === el.author ? 'message__self' : null}>
                      <Comment.Author as='a'>
                         {el.author}

@@ -3,7 +3,6 @@ import './App.css';
 import Chat from './Chat/Chat';
 import Login from './Auth/Login'
 import socket from "socket.io-client";
-// import axios from 'axios'
 import moment from 'moment'
 
 window.socket = socket(window.location.origin, {
@@ -37,45 +36,46 @@ class App extends Component {
           modal: false,
         }))
     }
-    
   }
 
-  componentWillMount(){
-    console.log('aaaaaaaaaaaaaa1')
-
-    window.socket.once("all-messages", (docs) => {
+  componentWillMount(){ 
+    
+    window.socket.on("all-messages", (obj) => {
       console.log('aaaaaaaaaaaaaa2')
-        this.setState(prev => ({
-            messages: [...docs],
-        }))
+        this.setState({
+            messages: obj.docs,
+            online: obj.online,
+        })
     })
 
+    let user = {
+      data: 'succsess',
+    }
+    window.socket.emit('new-user', user)
+
+    console.log('aaaaaaaaaaaaaa1')
+   
+  }
+
+  componentDidMount() {
     window.socket.on("change-online", (online) => {
       this.setState({
           online: online
       })
    })
-     
+  }
 
-    //  setTimeout(() => {
-    //    if (this.state.messages.length === 0) {
-    //       window.socket.once("all-messages", (docs) => {
-    //         console.log('aa333')
-    //         this.setState(prev => ({
-    //             messages: [...docs],
-    //         }))
-    //     })
-    //    }
-    //  }, 2000);
+  componentWillUnmount(){
+    window.socket.emit('disconnect')
+  }
 
-    }
   
   render() {
      const {modal, online, messages} = this.state
     return (
   
       <div className="App">
-        {modal ? <Login closeModal={this.toggleModal} user={this.state.user} handlerChange={this.handlerChange}error={this.state.error}/> : messages.length === 0 && online === 0 ? <div> Waiting</div> : <Chat user={this.state.user} online={this.state.online} messages={this.state.messages}/> }
+        {modal ? <Login closeModal={this.toggleModal} user={this.state.user} handlerChange={this.handlerChange}error={this.state.error}/> : messages.length === 0 && online === 0 ? <div> Waiting </div> : <Chat user={this.state.user} online={this.state.online} messages={this.state.messages}/> }
       </div>
     );
   }

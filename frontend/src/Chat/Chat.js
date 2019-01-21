@@ -8,9 +8,9 @@ import uuidv4 from 'uuid'
 // import { Link, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
  
 
-window.socket = socket(window.location.origin, {
-    path: "/chat/"
-}, {transports: ['websocket']});
+// window.socket = socket(window.location.origin, {
+//     path: "/chat/"
+// }, {transports: ['websocket']});
 
 class Chat extends Component {
     state = {
@@ -88,7 +88,6 @@ class Chat extends Component {
             window.socket.emit("message", message);      
         } else {
             let editMess = {...this.state.editMessage, content: this.state.input}
-            // console.log(mess)
             this.setState(prev =>({
                 messages: prev.messages.map(el => el.messageId === editMess.messageId ? editMess : el),
                 newMessage: true,
@@ -101,7 +100,6 @@ class Chat extends Component {
 
     deleteMessage = (e) => {
         let id = e.target.id
-        // console.log(id)
         
         window.socket.emit('deleteMessage', id)
         this.setState(prev =>({
@@ -111,9 +109,7 @@ class Chat extends Component {
 
     editMessage = (e) => {
         let id = e.target.id
-        // console.log(id)
         let message = this.state.messages.find(el => el.messageId === id)
-        // console.log(message)
         this.setState({
             input: message.content,
             newMessage: false,
@@ -183,12 +179,10 @@ class Chat extends Component {
              </Comment>
                 </div>
               ) : <div> Waiting</div>}
-             <div 
-            //  style={{ float:"left", clear: "both" }}
-                ref={(el) => { this.messagesEnd = el; }}>
+            <div ref={(el) => { this.messagesEnd = el; }}>
             </div>
 
-            <div style={{fontStyle: 'italic'}}>{typingUser && `${typingUser} typing a message...`}</div>
+            <div style={{fontStyle: 'italic', marginLeft: 10}}>{typingUser && `${typingUser} typing a message...`}</div>
              </Comment.Group>
            </Segment>
 

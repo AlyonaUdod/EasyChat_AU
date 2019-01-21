@@ -3,6 +3,9 @@ import { Container, MessageHeader, Segment, Comment, Input, Button, Header, Icon
 import moment from 'moment';
 import uuidv4 from 'uuid'
 import md5 from 'md5'
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker } from 'emoji-mart'
+
 
 
 class Chat extends Component {
@@ -16,6 +19,7 @@ class Chat extends Component {
         newMessage: true,
         editMessage: {},
         typingUser: '',
+        showEmoji: false,
     }
 
     componentDidMount(){        
@@ -65,22 +69,30 @@ class Chat extends Component {
           input:e.target.value
       })
          window.socket.emit('typing', this.state.author)  
+    }   
+
+    handleKeyDown = (e) => {
+        if (e.keyCode === 13) {
+            this.sendMessage();
+        }
     }
 
-
     sendMessage=()=>{
+
         if (this.state.newMessage) {
-           let message = {
-            time: moment().format('LTS'),
-            content: this.state.input,
-            author: this.state.author.name,
-            messageId: uuidv4(),
-            }
-            this.setState(prev =>({
-                messages:[...prev.messages, message],
-                input: '',
-            }))
-            window.socket.emit("message", message);      
+            if (this.state.input) {
+                let message = {
+                time: moment().format('LTS'),
+                content: this.state.input,
+                author: this.state.author.name,
+                messageId: uuidv4(),
+                }
+                this.setState(prev =>({
+                    messages:[...prev.messages, message],
+                    input: '',
+                }))
+                window.socket.emit("message", message);   
+            }    
         } else {
             let editMess = {...this.state.editMessage, content: this.state.input}
             this.setState(prev =>({
@@ -91,6 +103,12 @@ class Chat extends Component {
             }))
             window.socket.emit("editMessage", editMess.messageId, editMess);    
         }
+    }
+
+    showEmoji = () => {
+        this.setState(prev=>({
+            showEmoji: !prev.showEmoji,
+        }))
     }
 
     deleteMessage = (e) => {
@@ -112,6 +130,25 @@ class Chat extends Component {
         })
     }
 
+    addEmoji = (e) => {
+        //console.log(e.unified)
+        if (e.unified.length <= 5){
+          let emojiPic = String.fromCodePoint(`0x${e.unified}`)
+          this.setState(prev=> ({
+            input: prev.input + emojiPic
+          }))
+        }else {
+          let sym = e.unified.split('-')
+          let codesArray = []
+          sym.forEach(el => codesArray.push('0x' + el))
+          //console.log(codesArray.length)
+          //console.log(codesArray)  // ["0x1f3f3", "0xfe0f"]
+          let emojiPic = String.fromCodePoint(...codesArray)
+          this.setState(prev=> ({
+            input: prev.input + emojiPic
+          }))
+        }
+      }
 
   render() {
       const {input, messages, typingUser}= this.state;
@@ -184,17 +221,22 @@ class Chat extends Component {
                     style={{
                         marginBottom: '.7rem'
                     }}
-                    label={<Button icon='add'/>}
+                    label={<Button icon='smile outline' onClick={this.showEmoji}/>}
                     labelPosition='left'
                     placeholder='Write your message'
                     onChange={this.handlerChange}
+                    onKeyDown = {this.handleKeyDown}
                     value={input}
+                    data-emojiable="true"
+                    autofocus
                    />
+                
+                  { this.state.showEmoji && <span className='emoji'> <Picker  style={{width: '205px'}} onSelect={this.addEmoji}/> </span>}
+                
                 <Button.Group icon widths='2'>
                     <Button color='orange' content='Add Reply' labelPosition='left' icon='edit' onClick={this.sendMessage} />
                 </Button.Group>
             </Segment>
-
 
         </Container>
       </div>

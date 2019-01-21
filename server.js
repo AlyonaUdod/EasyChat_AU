@@ -51,7 +51,7 @@ io.on('connection', (client) => {
         let a = usersOnline.filter(el => el.userId !== client.id)
         usersOnline = a
         // console.log(usersOnline)
-        console.log(online > 1 ? --online : null);
+        console.log(online > 0 ? --online : null);
         console.log(`Now in chat ${online} users.`); 
         client.broadcast.emit("change-online", online);
         io.emit('get-user-name', usersOnline)

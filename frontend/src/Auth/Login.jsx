@@ -25,6 +25,7 @@ export default class Login extends Component {
             onChange={this.props.handlerChange}
             value={this.props.user}
             required
+            autofocus
             />
           <Button color='orange' fluid size='large' onClick={this.props.closeModal}>
             Log In Chat
@@ -37,13 +38,13 @@ export default class Login extends Component {
           {this.state.errors.map(el => <p key={el.message}>{el.message}</p>)}
         </Message>
       )} */}
-        {/* {this.props.error &&
+        {this.props.error &&
           <Message>
           Enter user name, please!
           {/* <NavLink to='/registration'>&nbsp;Registration</NavLink>  */}
-        {/* </Message>  } */}
-        
+        </Message> }
       </Grid.Column>
+     
     </Grid>
     )
   }

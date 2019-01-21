@@ -50,3 +50,13 @@ html, body, .App, .app {
   width: 25%;
   margin-top: 15px;
 }
+
+.emoji {
+  position: absolute;
+  height: 254px;
+  overflow: hidden;
+  top: -141px;
+  left: -205px;
+  z-index: 111111;
+  border-bottom: 1px solid rgb(226, 225, 225);
+}

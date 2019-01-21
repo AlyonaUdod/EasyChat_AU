@@ -28,13 +28,12 @@ class App extends Component {
   }
 
   toggleModal = () => {
-    if (this.state.user) {
+    if (!this.state.user) {
         this.setState(prev => ({
-          modal: false
+          error: true,
         }))
     } else {
         this.setState(prev => ({
-          messages: [...prev.messages, {time: moment().format('LTS'), user: 'Admin', content: 'Sorry, can\'t load previos messages'}],
           modal: false,
         }))
     }

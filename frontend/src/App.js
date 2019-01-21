@@ -109,7 +109,7 @@ class App extends Component {
     return (
   
       <div className="App">
-        {modal ? <Login closeModal={this.onClick} user={this.state.user} handlerChange={this.handlerChange}error={this.state.error}/> : messages.length === 0 && online === 0 ? <div> Waiting </div> : <div className='chatWrapper'>
+        {modal ? <Login closeModal={this.onClick} user={this.state.user} handlerChange={this.handlerChange}error={this.state.error}/> : <div className='chatWrapper'>
           <UserPanel users={usersOnline} user={this.state.user}/><Chat user={this.state.user} online={this.state.online} messages={this.state.messages}/> </div>}
       </div>
     );

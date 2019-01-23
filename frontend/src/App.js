@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
-import Chat from './Chat/Chat';
+
 import Login from './Auth/Login'
 import socket from "socket.io-client";
-import UserPanel from './UserPanel/UserPanel';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, withRouter } from 'react-router-dom';
 import Registration from './Auth/Registration'
-import ChannelPanel from './ChannelPanel/ChannelPanel'
+import Main from './Main/Main';
+
 
 window.socket = socket(window.location.origin, {
     path: "/chat/"
@@ -24,7 +24,7 @@ class App extends Component {
     online: 0,
     messages: [],
     usersOnline: [],
-    currentUser: {},
+    currentUser: '',
     allUsers: [],
   }
 
@@ -35,9 +35,19 @@ class App extends Component {
   }
 
   toggleModal = () => {
-      this.setState(prev => ({
-        modal: false,
-      }))
+    this.setState({
+      modal: false,
+    })
+    this.props.history.push('/')
+  }
+
+  onClick = () => {
+    this.toggleModal()
+    let obj = {
+      userName: this.state.currentUser.username,
+      userId: this.state.userId,
+    }
+    window.socket.emit('send-user-name-to-online-DB', obj)
   }
 
   resetFields = () => {
@@ -60,10 +70,10 @@ class App extends Component {
     window.socket.emit('login', user)
   }
 
+
 // state - объект в умном компоненте, в котором хранятся данные для рендера
 
   registrationToChat = () => {
-    // console.log('It\'s work!')
     if (this.state.password === this.state.passwordConfirm) {
        let user = {
         username: this.state.user,
@@ -76,16 +86,6 @@ class App extends Component {
         error: 'Different password!'
       })
     }
-  }
-
-  onClick = () => {
-    // this.uniqueNames(this.state.messages)
-    this.toggleModal()
-    let obj = {
-      userName: this.state.currentUser.username,
-      userId: this.state.userId,
-    }
-    window.socket.emit('send-user-name-to-online-DB', obj)
   }
 
   componentWillMount(){ 
@@ -113,7 +113,28 @@ class App extends Component {
     window.socket.emit('new-user', user)
   }
 
+  // componentDidUpdate() {
+  //   if(this.state.active) {
+  //         // this.props.setUser(user);
+  //         this.props.history.push('/')
+  //       } else {
+  //         this.props.history.push('/login')
+  //         // this.props.clearUser()
+  //       }
+  // }
+
+
   componentDidMount() {
+
+    if(!this.state.modal) {
+      // this.props.setUser(user);
+      console.log('Uraaa')
+      this.props.history.push('/')
+    } else {
+      this.props.history.push('/login')
+      // this.props.clearUser()
+    }
+
     window.socket.on("change-online", (online) => {
       this.setState({
           online: online,
@@ -179,29 +200,24 @@ class App extends Component {
   // }
   
   render() {
-     const {modal, usersOnline, email, allUsers} = this.state
+     const {modal, email} = this.state
     return (
   
       <div className="App">
-        {modal ? 
+      
         <Switch>
-          <Route exact path='/' render={(props) => <Login {...props} closeModal={this.onClick} user={this.state.user} password={this.state.password} handlerChange={this.handlerChange} error={this.state.error} reset={this.resetFields} login={this.loginToChat} email={email}/>}/>
+          <Route path='/login' render={(props) => <Login {...props} closeModal={this.onClick} user={this.state.user} password={this.state.password} handlerChange={this.handlerChange} error={this.state.error} reset={this.resetFields} login={this.loginToChat} email={email}/>}/>
 
           <Route path='/registration' render={(props) => <Registration {...props} closeModal={this.onClick} user={this.state.user} password={this.state.password} handlerChange={this.handlerChange} error={this.state.error} registration={this.registrationToChat} reset={this.resetFields} email={email}/>}/>
 
-        </Switch>
+          <Route exact path='/' render={(props) => <Main users={this.state.allUsers} user={this.state.currentUser.username} onlineUsers={this.state.usersOnline} online={this.state.online} messages={this.state.messages}/>}/>
 
-        :   <div className='chatWrapper'>
-            <div className = 'userPanelContainer'>
-              <UserPanel users={allUsers} user={this.state.currentUser.username} onlineUsers={usersOnline}/>
-              <ChannelPanel/>
-            </div>
-              <Chat user={this.state.user} online={this.state.online} messages={this.state.messages}/> 
-            </div>}
+        </Switch>
+    
 
       </div>
     );
   }
 }
 
-export default App;
+export default withRouter(App);

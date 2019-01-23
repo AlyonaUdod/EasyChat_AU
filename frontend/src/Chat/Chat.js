@@ -29,7 +29,8 @@ class Chat extends Component {
         ] :  this.props.messages,
         author: {
             name: this.props.user,
-            avatar: `https://gravatar.com/avatar/${md5(this.props.user)}?d=identicon`},
+            // avatar: `https://gravatar.com/avatar/${md5(this.props.user)}?d=identicon`}, 
+        },
         newMessage: true,
         editMessage: {},
         typingUser: '',
@@ -37,7 +38,6 @@ class Chat extends Component {
     }
 
     componentDidMount(){        
-
         window.socket.on("change-online", (online) => {
             this.setState({
                 online: online,

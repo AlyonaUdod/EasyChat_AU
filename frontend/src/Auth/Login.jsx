@@ -60,7 +60,6 @@ export default class Login extends Component {
           <Message error>
             <h3>Error</h3>
           {this.props.error}
-          {/* <NavLink to='/registration'>&nbsp;Registration</NavLink>  */}
            </Message> }
         <Message>
           Don't have an account?

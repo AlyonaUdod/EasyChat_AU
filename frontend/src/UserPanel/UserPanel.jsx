@@ -20,18 +20,6 @@ const UserPanel = ({users, user, onlineUsers}) => {
                     </List.Item>
                     )}
                 </List>
-                <Divider/>
-                <h4 style={{fontStyle: 'italic', textAlign:'center'}}>All Users</h4>
-               <List divided verticalAlign='middle'>
-                    {users.map(el=>
-                    <List.Item>
-                        <Image avatar src= {`http://gravatar.com/avatar/${md5(el.username)}?d=identicon`}/>
-                        <List.Content>
-                            <List.Header as='a'>{el.username}</List.Header>
-                        </List.Content>
-                    </List.Item>
-                    )}
-                </List>
            </Segment>
         </Container>
    );

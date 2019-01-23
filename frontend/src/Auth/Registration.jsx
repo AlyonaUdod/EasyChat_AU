@@ -165,9 +165,7 @@ export default class Registration extends Component {
                 // className={this.handleInput(this.state.errors, 'password')}
                 /> 
               <Button color='green' fluid size='large'> 
-               {/* onClick={this.props.registration}> */}
                 Submit
-                <NavLink style={{color: 'white'}} to='/'>&nbsp;</NavLink>
               </Button>
             </Segment>
           </Form>
@@ -179,7 +177,7 @@ export default class Registration extends Component {
                 </Message> }
               <Message>
               Already a user? 
-              <NavLink to='/' onClick={this.props.reset}>&nbsp;Login</NavLink>
+              <NavLink to='/login' onClick={this.props.reset}>&nbsp;Login</NavLink>
             </Message>
           </Grid.Column>
         </Grid>

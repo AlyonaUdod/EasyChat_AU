@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {Grid, Form, Segment, Button, Header, Message, Icon} from 'semantic-ui-react'
+import {NavLink} from 'react-router-dom'
 
 export default class Login extends Component {
 
@@ -13,11 +14,11 @@ export default class Login extends Component {
         <Icon name='user circle' color='orange'/>
         Log in chat!
       </Header>
-      <Form size='large' onSubmit={this.handlerSubmit}>
+      <Form size='large' onSubmit={this.props.login}>
         <Segment>
-          <Form.Input 
+          {/* <Form.Input 
             fluid
-            name='username'
+            name='user'
             icon='user'
             iconPosition='left'
             placeholder="Enter Username"
@@ -25,24 +26,46 @@ export default class Login extends Component {
             onChange={this.props.handlerChange}
             value={this.props.user}
             required
-            autofocus
+            autoFocus
+            /> */}
+             <Form.Input 
+            fluid
+            name='email'
+            icon='mail'
+            iconPosition='left'
+            placeholder="Enter Email"
+            type='email'
+            onChange={this.props.handlerChange}
+            value={this.props.email}
+            required
+            autoFocus
             />
-          <Button color='orange' fluid size='large' onClick={this.props.closeModal}>
-            Log In Chat
+           <Form.Input 
+            fluid
+            name='password'
+            icon='lock'
+            iconPosition='left'
+            placeholder="Password"
+            type='password'
+            onChange={this.props.handlerChange}
+            value={this.props.password}
+            required
+            />
+          <Button color='orange' fluid size='large'>
+            Log In Easy Chat
           </Button>
         </Segment>
       </Form>
-      {/* {this.state.errors.length > 0 && (
-        <Message error>
-          <h3>Error</h3>
-          {this.state.errors.map(el => <p key={el.message}>{el.message}</p>)}
-        </Message>
-      )} */}
         {this.props.error &&
-          <Message>
-          Enter user name, please!
+          <Message error>
+            <h3>Error</h3>
+          {this.props.error}
           {/* <NavLink to='/registration'>&nbsp;Registration</NavLink>  */}
-        </Message> }
+           </Message> }
+        <Message>
+          Don't have an account?
+          <NavLink to='/registration' onClick={this.props.reset}>&nbsp;Registration</NavLink>
+        </Message>
       </Grid.Column>
      
     </Grid>

@@ -12,7 +12,21 @@ class Chat extends Component {
     state = {
         online: this.props.online,
         input:'',
-        messages: this.props.messages,
+        messages: this.props.messages.length === 0 ? [
+            {
+                "_id": {
+                    "$oid": "5c46d8d0e9cb0c07100aafe9"
+                },
+                "time": "1548146896050",
+                "content": "Test message",
+                "author": "Author",
+                "messageId": "718a3f11-9a33-4d07-b4e1-e23f89dc5ced",
+                "addAt": {
+                    "$date": "2019-01-22T08:48:16.436Z"
+                },
+                "__v": 0
+            } 
+        ] :  this.props.messages,
         author: {
             name: this.props.user,
             avatar: `https://gravatar.com/avatar/${md5(this.props.user)}?d=identicon`},
@@ -26,7 +40,8 @@ class Chat extends Component {
 
         window.socket.on("change-online", (online) => {
             this.setState({
-                online: online
+                online: online,
+                typingUser: '',
             })
         })
 
@@ -78,11 +93,10 @@ class Chat extends Component {
     }
 
     sendMessage=()=>{
-
         if (this.state.newMessage) {
             if (this.state.input) {
                 let message = {
-                time: moment().format('LTS'),
+                time: Date.now(),
                 content: this.state.input,
                 author: this.state.author.name,
                 messageId: uuidv4(),
@@ -153,7 +167,10 @@ class Chat extends Component {
       }
 
   render() {
-      const {input, messages, typingUser}= this.state;
+   
+      const {input, messages, typingUser}= this.state;   
+    //   let a = moment(+messages[0].time).format('LTS')
+    //   console.log(a)
       if (messages.length !== 0) {
         return (
       <div className='container'>
@@ -181,14 +198,16 @@ class Chat extends Component {
             {/* </div> */}
              {messages.length !== 0 ? messages.map( el =>
               <div ref={node =>{this.messageEnd = node}} key={el.messageId+el.content} className='single-mes'>
-                 <Comment id={el.messageId}  >
+                 <Comment id={el.messageId} key={el.messageId+el.time}>
                  <Comment.Avatar src={`https://gravatar.com/avatar/${md5(el.author)}?d=identicon`}/>
                  <Comment.Content className={this.state.author.name === el.author ? 'message__self' : null}>
                      <Comment.Author as='a'>
                         {el.author}
                      </Comment.Author>
                      <Comment.Metadata>
-                        {el.time}
+                         {moment(el.time).format('LTS')}
+                         {/* {moment(el.time).utc()} */}
+                        {/* {moment(`${el.time}`,"LTS")} */}
                      </Comment.Metadata>
                     {/* <Button icon='edit'/>
                     <Button icon='delete'/> */}
@@ -230,7 +249,7 @@ class Chat extends Component {
                     onKeyDown = {this.handleKeyDown}
                     value={input}
                     data-emojiable="true"
-                    autofocus
+                    autoFocus
                    />
                 
                   { this.state.showEmoji && <span className='emoji'> <Picker  style={{width: '205px'}} onSelect={this.addEmoji}/> </span>}

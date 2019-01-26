@@ -44,15 +44,14 @@ let message = {};
 
 module.exports = io => {
     io.on('connection', (client) => {   
-        // client.join('general')
 
         client.on('new-user', (user) => {
             console.log("User connected");
             console.log(++online); 
             client.broadcast.emit("change-online", online)
             console.log(user);
-            let allMes = Message.find() // .sort({addAt: 1}).limit(30).lean();
-            allMes.exec(function(err,docs){   // sort('-time').limit(30)
+            let allMessages = Message.find() // .sort({addAt: 1}).limit(30).lean();
+            allMessages.exec(function(err,docs){   // sort('-time').limit(30)
                 if (err) throw err;
                 console.log('Send message from DB');
                    let obj ={
@@ -66,9 +65,9 @@ module.exports = io => {
             })  
 
             let allUsers = User.find()
-            allUsers.exec(function(err,docs2) {
+            allUsers.lean().exec(function(err,docs2) {
                 if (err) throw err;
-                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!');
                 client.emit('all-users', docs2)
             })
         })
@@ -129,6 +128,12 @@ module.exports = io => {
                     // });
                     message = {message: "User created", currentUser: userDB};
                     client.emit('registration-on-DB', message);
+                    let allUsers = User.find()
+                    allUsers.lean().exec(function(err,docs2) {
+                        if (err) throw err;
+                        // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                        io.emit('all-users', docs2)
+                    })
                 }
             } catch (e) {
                 console.error("E, registeration,", e);
@@ -146,6 +151,11 @@ module.exports = io => {
                     // });
                     message = {message: "User login success", currentUser: userDb};
                     client.emit('login-on-DB', message);
+                    let allUsers = User.find()
+                    allUsers.lean().exec(function(err,docs2) {
+                        if (err) throw err;
+                        io.emit('all-users', docs2)
+                    })
                 } else if (userDb == void(0)) {
                     message = {message: "User not exist"};
                     client.emit('login-on-DB', message);
@@ -158,6 +168,24 @@ module.exports = io => {
                 message = {message: "Some DB error."};
                 client.emit('login-on-DB', message);
             }
+        })
+        client.on('change-user-avatar', (obj) => {
+            User.findOneAndUpdate({_id: obj.id}, {avatar: obj.img}, err => {
+                if (err) {
+                    throw err
+                } else {
+                    let allUsers = User.find()
+                    allUsers.lean().exec(function(err,docs2) {
+                        if (err) throw err;
+                        io.emit('all-users', docs2)
+                    })
+                    User.findOne({_id: obj.id}).lean().exec(function(err,user) {
+                        if (err) throw err;
+                        console.log('aaa')
+                        client.emit("user-avatar-was-edited", user)
+                    })
+                }  
+            })
         })
     });
 };

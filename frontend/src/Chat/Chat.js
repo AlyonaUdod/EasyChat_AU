@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Container, MessageHeader, Segment, Comment, Input, Button, Header, Icon} from 'semantic-ui-react';
 import moment from 'moment';
 import uuidv4 from 'uuid'
+// import uuid from 'uuid';
 import md5 from 'md5'
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
@@ -29,12 +30,13 @@ class Chat extends Component {
         ] :  this.props.messages,
         author: {
             name: this.props.user,
-            // avatar: `https://gravatar.com/avatar/${md5(this.props.user)}?d=identicon`}, 
+            avatar: this.props.currentUser.avatar, 
         },
         newMessage: true,
         editMessage: {},
         typingUser: '',
         showEmoji: false,
+        users: this.props.allUsers,
     }
 
     componentDidMount(){        
@@ -166,13 +168,28 @@ class Chat extends Component {
         }
       }
 
+      messageUserAvatar = (name) => {
+        let a = this.props.allUsers.find(item => item.username === name)
+        // console.log(a)
+        if (a !== undefined) {
+            if(a.avatar) {
+                    return <Comment.Avatar src={a.avatar}/>
+                } else {
+                    return <Comment.Avatar src={`https://gravatar.com/avatar/${md5(`${name}`)}?d=identicon`}/>
+            }
+          } else {
+            return <Comment.Avatar src={`https://gravatar.com/avatar/${md5(`${name}`)}?d=identicon`}/>
+          }   
+      }
+      
   render() {
-   
+
       const {input, messages, typingUser}= this.state;   
     //   let a = moment(+messages[0].time).format('LTS')
     //   console.log(a)
       if (messages.length !== 0) {
         return (
+            
       <div className='container'>
         <Container fluid>
 
@@ -188,7 +205,7 @@ class Chat extends Component {
                     marginBottom: 0
                 }}>
                 <Header.Subheader>
-                    Online Users: {this.state.online}
+                   General / Online Users: {this.state.online}
                 </Header.Subheader>
                 </Header>
             </Segment>
@@ -199,7 +216,9 @@ class Chat extends Component {
              {messages.length !== 0 ? messages.map( el =>
               <div ref={node =>{this.messageEnd = node}} key={el.messageId+el.content} className='single-mes'>
                  <Comment id={el.messageId} key={el.messageId+el.time}>
-                 <Comment.Avatar src={`https://gravatar.com/avatar/${md5(el.author)}?d=identicon`}/>
+
+                {this.props.allUsers && this.messageUserAvatar(el.author)}
+                
                  <Comment.Content className={this.state.author.name === el.author ? 'message__self' : null}>
                      <Comment.Author as='a'>
                         {el.author}

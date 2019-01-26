@@ -7,6 +7,7 @@ const userSchema = new Schema({
     password: { type: String, required: true },
     email: { type: String, unique: true, required: true },
     message: {},
+    avatar: Buffer,
     addAt: { type: Date, default: Date.now}
 }, {
     versionKey: false,

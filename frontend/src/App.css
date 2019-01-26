@@ -1,28 +1,35 @@
-html, body, .App, .app {
+ html, body, .App, .app {
   min-height: 90vh;
   max-height: 90vh;
-  /* height: none; */
-  /* padding: .2rem; */
+  height: 100vh;
+  height: none;
+  padding: .2rem;
   margin: 0;
-  /* background-color: #eee; */
-}
+  background: radial-gradient(#fefcea, rgba(34, 101, 163, 1)); 
+  /* background: radial-gradient(rgba(255, 255, 255, .8), rgba(34, 101, 163, .5)), url(dron.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fix; */
+} 
 
 .chatWrapper {
   display: flex;
   width: 90%;
-  max-width: 900px;
+  max-width: 1100px;
   margin: 10px auto;
  }
 
  .container {
   width: 90%;
-  max-width: 700px;
-  /* margin: 10px auto; */
+  max-width: 1000px;
 }
+
 .messages {
   height: 60vh;
   overflow-y: scroll;
   min-width: 100%;
+  /* background-image: url(dron.jpg); */
+  /* background: linear-gradient(rgba(255, 255, 255, .8), rgba(34, 101, 163, .5)); */
 }
 .message__form {
   /* position: fixed !important; */
@@ -48,15 +55,24 @@ html, body, .App, .app {
 
 .userPanelContainer {
   width: 25%;
-  margin-top: 15px;
+  margin: 15px;
+  overflow: hidden;
+  min-height: 90vh;
+  max-height: 90vh;
+  /* background: rgba(255, 252, 51, 0.5); */
 }
 
 .emoji {
   position: absolute;
-  height: 254px;
+  height: 295px;
   overflow: hidden;
-  top: -141px;
+  top: -182px;
   left: -205px;
   z-index: 111111;
   border-bottom: 1px solid rgb(226, 225, 225);
+}
+
+.all-users {
+  /* overflow: scroll; */
+
 }

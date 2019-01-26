@@ -109,8 +109,8 @@ export default class Registration extends Component {
           <Grid.Column style={{
             maxWidth: 450
           }}>
-          <Header as='h2' icon color='green' textAlign='center'>
-            <Icon name='comment alternate' color='green'/>
+          <Header as='h2' icon color='grey' textAlign='center'>
+            <Icon name='comment alternate' color='grey'/>
             Register to Easy Chat
           </Header>
           <Form size='large' onSubmit={this.props.registration}>
@@ -164,7 +164,7 @@ export default class Registration extends Component {
                 required
                 // className={this.handleInput(this.state.errors, 'password')}
                 /> 
-              <Button color='green' fluid size='large'> 
+              <Button color='grey' fluid size='large'> 
                 Submit
               </Button>
             </Segment>

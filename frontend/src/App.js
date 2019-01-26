@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import './App.css';
+import md5 from 'md5';
 
 import Login from './Auth/Login'
 import socket from "socket.io-client";
 import { Switch, Route, withRouter } from 'react-router-dom';
 import Registration from './Auth/Registration'
 import Main from './Main/Main';
+// import { Modal, Input, Button, Icon } from 'semantic-ui-react';
 
 
 window.socket = socket(window.location.origin, {
@@ -26,6 +28,8 @@ class App extends Component {
     usersOnline: [],
     currentUser: '',
     allUsers: [],
+    file: null,
+    userId: '',
   }
 
   handlerChange = (e) => {
@@ -60,16 +64,14 @@ class App extends Component {
     })
   }
 
-
   loginToChat = () => {
     let user = {
-      username: this.state.user,
+      // username: this.state.user,
       email: this.state.email,
       password: this.state.password,
     }
     window.socket.emit('login', user)
   }
-
 
 // state - объект в умном компоненте, в котором хранятся данные для рендера
 
@@ -79,6 +81,7 @@ class App extends Component {
         username: this.state.user,
         password: this.state.password,
         email: this.state.email,
+        avatar: `http://gravatar.com/avatar/${md5(this.state.user)}?d=identicon`,
         }
       window.socket.emit('registration', user)
     } else {
@@ -88,10 +91,57 @@ class App extends Component {
     }
   }
 
-  componentWillMount(){ 
-    // console.log()
+  signOut = () => {
+    this.setState({
+      currentUser: '',
+      userId: '',
+      modal: true,
+    })
+    this.props.history.push('/login')
+  }
+
+  // componentWillMount(){ 
+  //   window.socket.on("all-messages", (obj) => {
+  //     // console.log(obj)
+  //       this.setState({
+  //           messages: obj.docs,
+  //           online: obj.online,
+  //           usersOnline: [...obj.usersOnline],
+  //           userId: obj.clientId,
+  //           allUsers: obj.allUsers,
+  //       })
+  //   })
+  //   // {...el, avatar:`data:image/jpeg;base64,${el.avatar}`})
+  //   window.socket.on("all-users", (allUsers) => {
+  //     let arr = allUsers.map(el => el.avatar ? ({...el, avatar:`data:image/jpeg;base64,${el.avatar}`}) : el)
+  //     // console.log(a)
+  //       this.setState({
+  //           allUsers: arr,
+  //       })
+  //   })
+
+  //   let user = {
+  //     data: 'succsess',
+  //   }
+  //   window.socket.emit('new-user', user)
+  // }
+
+
+
+
+  componentDidMount() {
+    if(!this.state.modal) {
+      // this.props.setUser(user);
+      // console.log('Uraaa')
+      this.props.history.push('/')
+    } else {
+      this.props.history.push('/login')
+      // this.props.clearUser()
+    }
+
+
     window.socket.on("all-messages", (obj) => {
-      console.log(obj)
+      // console.log(obj)
         this.setState({
             messages: obj.docs,
             online: obj.online,
@@ -100,40 +150,18 @@ class App extends Component {
             allUsers: obj.allUsers,
         })
     })
+    // {...el, avatar:`data:image/jpeg;base64,${el.avatar}`})
     window.socket.on("all-users", (allUsers) => {
+      let arr = allUsers.map(el => el.avatar ? ({...el, avatar:`data:image/jpeg;base64,${el.avatar}`}) : el)
         this.setState({
-            allUsers: allUsers,
+            allUsers: arr,
         })
     })
 
     let user = {
       data: 'succsess',
     }
-    // console.log('oooo')
     window.socket.emit('new-user', user)
-  }
-
-  // componentDidUpdate() {
-  //   if(this.state.active) {
-  //         // this.props.setUser(user);
-  //         this.props.history.push('/')
-  //       } else {
-  //         this.props.history.push('/login')
-  //         // this.props.clearUser()
-  //       }
-  // }
-
-
-  componentDidMount() {
-
-    if(!this.state.modal) {
-      // this.props.setUser(user);
-      console.log('Uraaa')
-      this.props.history.push('/')
-    } else {
-      this.props.history.push('/login')
-      // this.props.clearUser()
-    }
 
     window.socket.on("change-online", (online) => {
       this.setState({
@@ -148,11 +176,23 @@ class App extends Component {
 
     window.socket.on('registration-on-DB', (message) => {
       if(message.message === 'User created') {
-        console.log(message)
+        // console.log(message)
+        let obj = {}
+        // let obj = {...message.currentUser, avatar:`data:image/jpeg;base64,${message.currentUser.avatar}`}
+        if (message.currentUser.avatar) {
+          // console.log('exist')
+          obj = {...message.currentUser, avatar:`data:image/jpeg;base64,${message.currentUser.avatar}`}
+        } else {
+          // console.log('noooooo exist')
+          obj = message.currentUser
+        }
+        // console.log(obj)
         this.setState({
-          currentUser: message.currentUser,
+          currentUser: obj,
           // user: message.currentUser.username,
           error: '',
+          email: '',
+          password: '',
       }, this.onClick)
       // console.log(message)
       } else {
@@ -163,44 +203,46 @@ class App extends Component {
     })
     window.socket.on('login-on-DB', (message) => {
       if (message.message === 'User login success') {
+        // console.log(message.currentUser)
+        let obj = {}
+        if (message.currentUser.avatar) {
+          // console.log('exist')
+          obj = {...message.currentUser, avatar:`data:image/jpeg;base64,${message.currentUser.avatar}`}
+        } else {
+          // console.log('noooooo exist')
+          obj = message.currentUser
+        }
+
         this.setState({
-          currentUser: message.currentUser,
+          currentUser: obj,
           // user: message.currentUser.username,
           error: '',
+          email: '',
+          password: '',
         }, this.onClick)
-        console.log(message.message)
+        // console.log(message.message)
       } else{
         this.setState({
           error: message.message,
         })
       }
     })
+
+    window.socket.on('user-avatar-was-edited', (obj) => {
+      // console.log('Its obj!!', obj)
+      let gg = {...obj, avatar:`data:image/jpeg;base64,${obj.avatar}`}
+      // console.log(gg)
+      this.setState({
+        currentUser: gg,
+      })
+    })
   }
 
-  componentWillUnmount(){
-    let user = {
-      data: 'succsess',
-    }
-    window.socket.emit('disconnect', (user))
+  componentDidUpdate(){
   }
 
-  // uniqueNames=(arr)=> {
-  //   // let  obj = {};
-  //   //   for (let i = 0; i < arr.length; i++) {
-  //   //   let str = arr[i].author;
-  //   //   obj[str] = true; // запомнить строку в виде свойства объекта
-  //   // }
-  //   // let result = [...Object.keys(obj)];
-  //   // if (!result.includes(this.state.user)) {
-  //   //   result.push(this.state.user)
-  //   // }
-  //   this.setState(prev =>({
-  //     users: [...prev.users, this.state.user],
-  //   }))
-  // }
-  
   render() {
-     const {modal, email} = this.state
+     const {email} = this.state
     return (
   
       <div className="App">
@@ -210,10 +252,9 @@ class App extends Component {
 
           <Route path='/registration' render={(props) => <Registration {...props} closeModal={this.onClick} user={this.state.user} password={this.state.password} handlerChange={this.handlerChange} error={this.state.error} registration={this.registrationToChat} reset={this.resetFields} email={email}/>}/>
 
-          <Route exact path='/' render={(props) => <Main users={this.state.allUsers} user={this.state.currentUser.username} onlineUsers={this.state.usersOnline} online={this.state.online} messages={this.state.messages}/>}/>
+          <Route exact path='/' render={(props) => <Main users={this.state.allUsers} user={this.state.currentUser.username} onlineUsers={this.state.usersOnline} online={this.state.online} messages={this.state.messages} currentUser={this.state.currentUser} signOut={this.signOut}/>}/>
 
         </Switch>
-    
 
       </div>
     );

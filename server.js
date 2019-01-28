@@ -31,7 +31,7 @@ mongoose.Promise = global.Promise;
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
-mongoose.connect('mongodb://admin:admin8@ds213755.mlab.com:13755/bootcamp8_progblog');
+mongoose.connect('mongodb://admin:qwertyui90@ds157064.mlab.com:57064/sandbox_test');
 
 require('./sockets')(io);
 

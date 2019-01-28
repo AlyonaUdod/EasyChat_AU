@@ -30,12 +30,13 @@ export default class UserPanel extends Component {
             text: <span onClick={this.props.signOut}><Icon name='sign-out alternate'/> Sign Out</span>,
         }
     ]
-
+    
   render() {
     //   console.log(this.state.allUsers)
     const {user} = this.props
     return (
       <Container fluid>
+  
             <Segment style={{backgroundColor: '#f2711c', marginBottom: '15px', border: '10px solid white' }}> 
                 <Header inverted  floated='left' as='h3'>
                     <Icon name='user secret'/>

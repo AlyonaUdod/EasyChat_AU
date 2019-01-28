@@ -27,17 +27,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser())
 
-
-
 mongoose.Promise = global.Promise;
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
-mongoose.connect('mongodb://admin:qwertyui90@ds157064.mlab.com:57064/sandbox_test');
+mongoose.connect('mongodb://admin:admin8@ds213755.mlab.com:13755/bootcamp8_progblog');
 
-// require('./router/router')(app);
 require('./sockets')(io);
-
 
 app.use(express.static('./frontend/build'));
 server.listen(PORT, () => (console.log(`server is running on ${PORT}`)));

@@ -31,12 +31,14 @@ class Chat extends Component {
         author: {
             name: this.props.user,
             avatar: this.props.currentUser.avatar, 
+            email: this.props.currentUser.email, 
         },
         newMessage: true,
         editMessage: {},
         typingUser: '',
         showEmoji: false,
         users: this.props.allUsers,
+        currentChannel: this.props.currentChannel,
     }
 
     componentDidMount(){        
@@ -53,17 +55,6 @@ class Chat extends Component {
             this.setState (prev => ({
                 messages: [...prev.messages, message],
                 typingUser: '',
-            }))
-        });
-
-        window.socket.on("message-was-deleted", (id) => {
-            this.setState(prev =>({
-                messages: prev.messages.filter(el => el.messageId !== id)
-            }))
-        });
-        window.socket.on("message-was-edited", (editMess) => {
-            this.setState(prev =>({
-                messages: prev.messages.map(el => el.messageId === editMess.messageId ? editMess : el)
             }))
         });
         window.socket.on('somebody-typing',(data) => {
@@ -90,38 +81,51 @@ class Chat extends Component {
 
     handleKeyDown = (e) => {
         if (e.keyCode === 13) {
-            this.sendMessage();
+            this.sendMessageToChannel();
         }
     }
 
-    sendMessage=()=>{
+    sendMessageToChannel=()=> {
         if (this.state.newMessage) {
-            if (this.state.input) {
-                let message = {
+            let message = {
                 time: Date.now(),
                 content: this.state.input,
-                author: this.state.author.name,
+                author: this.state.author.email,
                 messageId: uuidv4(),
                 }
-                this.setState(prev =>({
-                    messages:[...prev.messages, message],
-                    input: '',
-                    showEmoji: false,
-                }))
-                window.socket.emit("message", message);   
-            }    
+            let obj = {
+                message: message,
+                currentChannel: this.props.currentChannel._id
+            }
+            // console.log(obj)
+            this.setState({
+                input: '',
+                showEmoji: false,
+
+            })
+            window.socket.emit("channel-message", obj); 
         } else {
             let editMess = {...this.state.editMessage, content: this.state.input}
+            
             this.setState(prev =>({
-                messages: prev.messages.map(el => el.messageId === editMess.messageId ? editMess : el),
                 newMessage: true,
                 editMessage: {},
                 input: '',
                 showEmoji: false,
+                // currentChannel: prev.currentChannel.messages.map(el => el.messageId === editMess.messageId ? editMess : el)
             }))
-            window.socket.emit("editMessage", editMess.messageId, editMess);    
+
+            let obj={
+                message: editMess,
+                currentChannel: this.props.currentChannel._id,
+            }
+
+            console.log(obj)
+            window.socket.emit("editChannelMessage", obj);    
         }
     }
+
+    
 
     showEmoji = () => {
         this.setState(prev=>({
@@ -131,16 +135,20 @@ class Chat extends Component {
 
     deleteMessage = (e) => {
         let id = e.target.id
-        
-        window.socket.emit('deleteMessage', id)
-        this.setState(prev =>({
-            messages: prev.messages.filter(el => el.messageId !== id)
-        }))
+        let obj={
+            messageId:id ,
+            currentChannel: this.props.currentChannel._id,
+        }
+        window.socket.emit('deleteChannelMessage', obj)
+        // this.setState(prev =>({
+        //     messages: prev.messages.filter(el => el.messageId !== id)
+        // }))
     }
 
     editMessage = (e) => {
         let id = e.target.id
-        let message = this.state.messages.find(el => el.messageId === id)
+        // let message = this.state.messages.find(el => el.messageId === id)
+        let message = this.props.currentChannel.messages.find(el => el.messageId === id)
         this.setState({
             input: message.content,
             newMessage: false,
@@ -168,25 +176,59 @@ class Chat extends Component {
         }
       }
 
-      messageUserAvatar = (name) => {
-        let a = this.props.allUsers.find(item => item.username === name)
+      messageUserAvatar = (email) => {
+        let a = this.props.allUsers.find(item => item.email === email)
         // console.log(a)
         if (a !== undefined) {
             if(a.avatar) {
                     return <Comment.Avatar src={a.avatar}/>
                 } else {
-                    return <Comment.Avatar src={`https://gravatar.com/avatar/${md5(`${name}`)}?d=identicon`}/>
+                    let b = a.username
+                    return <Comment.Avatar src={`https://gravatar.com/avatar/${md5(`${b}`)}?d=identicon`}/>
             }
           } else {
-            return <Comment.Avatar src={`https://gravatar.com/avatar/${md5(`${name}`)}?d=identicon`}/>
+            let b = a.username
+            return <Comment.Avatar src={`https://gravatar.com/avatar/${md5(`${b}`)}?d=identicon`}/>
           }   
+      }
+
+      messageUserName = (email) => {
+        let a = this.props.allUsers.find(item => item.email === email) 
+        return a.username
+      }
+      getChannelName=()=> {
+          if(this.props.currentChannel) {
+                console.log('rrrr')
+                let arr = this.props.currentChannel.channelName.split('/')
+                // console.log(arr)
+                let arr2 = []
+                for(let el of this.props.allUsers) {
+                    for(let ell of arr) {
+                        console.log(ell)
+                       if(el.email === ell){
+                           arr2.push(el.username) 
+                        }
+                    }
+                }
+                // let arr3 = this.props.allUsers.filter(el => arr.map(ell => el.email === ell))
+                console.log(arr2)
+                let arr3 = arr2.filter(el => el !== this.props.currentUser.username)
+                console.log(arr3)
+                if(arr3.length !== 0) {
+                    return arr3[0]
+                } else {
+                    return `${this.props.currentUser.username} (you)`
+                }
+               
+          }
+      
       }
       
   render() {
 
       const {input, messages, typingUser}= this.state;   
-    //   let a = moment(+messages[0].time).format('LTS')
-    //   console.log(a)
+      const { currentChannel} = this.props;
+  
       if (messages.length !== 0) {
         return (
             
@@ -204,8 +246,9 @@ class Chat extends Component {
                 style={{
                     marginBottom: 0
                 }}>
-                <Header.Subheader>
-                   General / Online Users: {this.state.online}
+                <Header.Subheader style={{color:'black', fontWeight: '700'}}>
+                   {currentChannel && currentChannel.type === 'public' ? `${currentChannel.channelName}/Online Users:${this.state.online}` : this.getChannelName()}  
+                   {/* / Online Users: {this.state.online} */}
                 </Header.Subheader>
                 </Header>
             </Segment>
@@ -213,7 +256,7 @@ class Chat extends Component {
              <Comment.Group className='messages'>
             {/* <div ref={node =>{this.messageEnd = node}}> */}
             {/* </div> */}
-             {messages.length !== 0 ? messages.map( el =>
+             {this.props.currentChannel ? this.props.currentChannel.messages.map( el =>
               <div ref={node =>{this.messageEnd = node}} key={el.messageId+el.content} className='single-mes'>
                  <Comment id={el.messageId} key={el.messageId+el.time}>
 
@@ -221,17 +264,13 @@ class Chat extends Component {
                 
                  <Comment.Content className={this.state.author.name === el.author ? 'message__self' : null}>
                      <Comment.Author as='a'>
-                        {el.author}
+                     {this.props.allUsers && this.messageUserName(el.author)}
                      </Comment.Author>
                      <Comment.Metadata>
-                         {moment(el.time).format('LTS')}
-                         {/* {moment(el.time).utc()} */}
-                        {/* {moment(`${el.time}`,"LTS")} */}
+                         {moment(el.time).format('LLLL')}
                      </Comment.Metadata>
-                    {/* <Button icon='edit'/>
-                    <Button icon='delete'/> */}
                   <Comment.Text>{el.content}</Comment.Text>
-                  {this.state.author.name === el.author ?  
+                  {this.state.author.email === el.author ?  
                         <Comment.Actions>
                             <Comment.Action id={el.messageId} onClick={this.editMessage}> 
                                 <Icon name='edit' id={el.messageId}/> Edit
@@ -274,7 +313,7 @@ class Chat extends Component {
                   { this.state.showEmoji && <span className='emoji'> <Picker  style={{width: '205px'}} onSelect={this.addEmoji}/> </span>}
                 
                 <Button.Group icon widths='2'>
-                    <Button color='orange' content='Add Reply' labelPosition='left' icon='edit' onClick={this.sendMessage} />
+                    <Button color='orange' content='Add Reply' labelPosition='left' icon='edit' onClick={this.sendMessageToChannel} />
                 </Button.Group>
             </Segment>
 

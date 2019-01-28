@@ -1,10 +1,10 @@
-const Message = require('./messageModel');
-const User = require('./userModel');
+const User = require('./models/userModel');
+const Channel = require('./models/channelModel')
 const _ = require('lodash');
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const config = require('./config')
 
 // function auth (socket, next) {
@@ -45,30 +45,28 @@ let message = {};
 module.exports = io => {
     io.on('connection', (client) => {   
 
-        client.on('new-user', (user) => {
+        client.on('new-user', () => {
             console.log("User connected");
             console.log(++online); 
             client.broadcast.emit("change-online", online)
-            console.log(user);
-            let allMessages = Message.find() // .sort({addAt: 1}).limit(30).lean();
-            allMessages.exec(function(err,docs){   // sort('-time').limit(30)
-                if (err) throw err;
-                console.log('Send message from DB');
-                   let obj ={
-                        docs: docs,
-                        online: online,
-                        usersOnline: usersOnline,
-                        clientId: client.id,
-                    }
-                // client.to('general').emit('all-messages', obj, general)
-                client.emit('all-messages', obj)
-            })  
-
+    
             let allUsers = User.find()
-            allUsers.lean().exec(function(err,docs2) {
+            allUsers.lean().exec(function(err,data) {
                 if (err) throw err;
-                // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!');
-                client.emit('all-users', docs2)
+                client.emit('all-users', data)
+            })
+
+            let allChannels = Channel.find()
+            allChannels.lean().exec(function(err,data) {
+                console.log(client.id)
+                if (err) throw err;
+                let obj ={
+                    channels: data,
+                    online: online,
+                    usersOnline: usersOnline,
+                    clientId: client.id,
+                }
+                client.emit('all-channels', obj)
             })
         })
         client.on('send-user-name-to-online-DB', (user) => {
@@ -79,37 +77,63 @@ module.exports = io => {
         client.on("disconnect", () => {
             let arr = usersOnline.filter(el => el.userId !== client.id)
             usersOnline = arr
-    
             console.log(online > 0 ? --online : null);
             console.log(`Now in chat ${online} users.`); 
             client.broadcast.emit("change-online", online);
             io.emit('get-user-name', usersOnline)
         });
-    
-        client.on("message", (message) => {
-            Message.create(message, err => {
-                if(err) return console.error(err);
-                client.broadcast.emit("new-message", message);
-            }); 
-        });
-        client.on("typing", (data) => {
-            console.log(data)
-            client.broadcast.emit("somebody-typing", data);
+        client.on('user-sign-out', (id) => {
+            let arr = usersOnline.filter(el => el.userId !== id)
+            usersOnline = arr
+            console.log(online > 0 ? --online : null);
+            console.log(`Now in chat ${online} users.`); 
+            client.broadcast.emit("change-online", online);
+            io.emit('get-user-name', usersOnline)
         })
-        client.on('deleteMessage', (id) => {
-            Message.findOneAndRemove({messageId: id}, err => {
-                if (err) throw err
-                console.log('Message succsessfully delete!')
-                client.broadcast.emit("message-was-deleted", id);
+        // client.on("typing", (data) => {
+        //     console.log(data)
+        //     client.broadcast.emit("somebody-typing", data);
+        // })
+        client.on('editChannelMessage',(obj) => {
+             Channel.findOne({
+                _id: obj.currentChannel
+            }).exec()
+            .then((channel) => {
+                let arr = channel.messages.map(el => el.messageId === obj.message.messageId ? obj.message : el)
+                channel.messages = arr
+                return channel.save()
+            })
+            .then(() => {
+                let allChannels = Channel.find()
+                allChannels.lean().exec(function(err,docs3) {
+                    if (err) throw err;
+                    io.emit('all-channels', docs3)
+                })
+            })
+            .catch(err => {
+                console.log(err)
             })
         })
-        client.on("editMessage", (id, editMess) => {
-            Message.findOneAndUpdate({messageId: id}, editMess, err => {
-                if (err) throw err
-                console.log('Message succsessfully edit!')
-                client.broadcast.emit("message-was-edited", editMess);
-            })
-        })
+        client.on('deleteChannelMessage',(obj) => {
+            Channel.findOne({
+               _id: obj.currentChannel
+           }).exec()
+           .then((channel) => {
+               let arr = channel.messages.filter(el => el.messageId !== obj.messageId)
+               channel.messages = arr
+               return channel.save()
+           })
+           .then(() => {
+               let allChannels = Channel.find()
+               allChannels.lean().exec(function(err,docs3) {
+                   if (err) throw err;
+                   io.emit('all-channels', docs3)
+               })
+           })
+           .catch(err => {
+               console.log(err)
+           })
+       })
         client.on('registration', async(user) => {
             try {
                 let userDB = await User.findOne({email: user.email}).lean().exec();
@@ -131,7 +155,6 @@ module.exports = io => {
                     let allUsers = User.find()
                     allUsers.lean().exec(function(err,docs2) {
                         if (err) throw err;
-                        // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!');
                         io.emit('all-users', docs2)
                     })
                 }
@@ -151,6 +174,7 @@ module.exports = io => {
                     // });
                     message = {message: "User login success", currentUser: userDb};
                     client.emit('login-on-DB', message);
+                    
                     let allUsers = User.find()
                     allUsers.lean().exec(function(err,docs2) {
                         if (err) throw err;
@@ -187,5 +211,37 @@ module.exports = io => {
                 }  
             })
         })
+        client.on('create-channel', (obj) => {
+            Channel.create(obj, (err,data) => {
+                if(err) return console.error(err);
+                console.log('Channel create!')
+                client.emit("channel-created", data);
+                let allChannels = Channel.find()
+                allChannels.lean().exec(function(err,docs3) {
+                    if (err) throw err;
+                    io.emit('all-channels', docs3)
+                })
+            })
+        })
+        client.on("channel-message", (obj) => {
+            Channel.findOne({
+                _id: obj.currentChannel
+            }).exec()
+            .then((channel) => {
+                console.log(channel)
+                channel.messages.push(obj.message)
+                return channel.save()
+            })
+            .then(() => {
+                let allChannels = Channel.find()
+                allChannels.lean().exec(function(err,docs3) {
+                    if (err) throw err;
+                    io.emit('all-channels', docs3)
+                })
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        });
     });
 };

@@ -30,7 +30,43 @@ class App extends Component {
     allUsers: [],
     file: null,
     userId: '',
+    channels: [],
+    currentChannel: null,
   }
+
+  changeCurrentChannel = (e) => {
+    // console.log('aaaa')
+    let id = e.target.id
+    let channel = this.state.channels.find(el => el._id === id)
+    this.setState({
+      currentChannel: channel,
+    })
+  }
+
+  directMessages=(e)=> {
+    // let id= 
+    let arr = this.state.channels.filter(el => el.channelName === `${this.state.currentUser.email}/${e.target.id}` || el.channelName === `${e.target.id}/${this.state.currentUser.email}`)
+    // console.log(arr)
+    if(arr.length === 0) {
+        let obj ={
+            channelName: `${this.state.currentUser.email}/${e.target.id}`,  
+            author: this.state.currentUser.email, 
+            type: 'privat',
+        }
+        // console.log(obj)
+        window.socket.emit('create-channel', obj)
+
+    } else {
+      let id = e.target.id
+      console.log(id)
+      let channel = this.state.channels.find(el => el.channelName === `${this.state.currentUser.email}/${e.target.id}` || el.channelName === `${e.target.id}/${this.state.currentUser.email}`)
+      // console.log(this.state.channels)
+      console.log(channel)
+      this.setState({
+        currentChannel: channel,
+      })
+    }
+}
 
   handlerChange = (e) => {
     this.setState({
@@ -96,61 +132,24 @@ class App extends Component {
       currentUser: '',
       userId: '',
       modal: true,
+      messages: [],
+      currentChannel: null,
     })
     this.props.history.push('/login')
+    window.socket.emit('user-sign-out', this.state.userId)
   }
 
-  // componentWillMount(){ 
-  //   window.socket.on("all-messages", (obj) => {
-  //     // console.log(obj)
-  //       this.setState({
-  //           messages: obj.docs,
-  //           online: obj.online,
-  //           usersOnline: [...obj.usersOnline],
-  //           userId: obj.clientId,
-  //           allUsers: obj.allUsers,
-  //       })
-  //   })
-  //   // {...el, avatar:`data:image/jpeg;base64,${el.avatar}`})
-  //   window.socket.on("all-users", (allUsers) => {
-  //     let arr = allUsers.map(el => el.avatar ? ({...el, avatar:`data:image/jpeg;base64,${el.avatar}`}) : el)
-  //     // console.log(a)
-  //       this.setState({
-  //           allUsers: arr,
-  //       })
-  //   })
-
-  //   let user = {
-  //     data: 'succsess',
-  //   }
-  //   window.socket.emit('new-user', user)
-  // }
-
-
-
-
-  componentDidMount() {
+  componentDidMount() { 
     if(!this.state.modal) {
       // this.props.setUser(user);
-      // console.log('Uraaa')
       this.props.history.push('/')
     } else {
       this.props.history.push('/login')
       // this.props.clearUser()
     }
 
-
-    window.socket.on("all-messages", (obj) => {
-      // console.log(obj)
-        this.setState({
-            messages: obj.docs,
-            online: obj.online,
-            usersOnline: [...obj.usersOnline],
-            userId: obj.clientId,
-            allUsers: obj.allUsers,
-        })
-    })
-    // {...el, avatar:`data:image/jpeg;base64,${el.avatar}`})
+    window.socket.emit('new-user')
+    
     window.socket.on("all-users", (allUsers) => {
       let arr = allUsers.map(el => el.avatar ? ({...el, avatar:`data:image/jpeg;base64,${el.avatar}`}) : el)
         this.setState({
@@ -158,10 +157,22 @@ class App extends Component {
         })
     })
 
-    let user = {
-      data: 'succsess',
-    }
-    window.socket.emit('new-user', user)
+    window.socket.on("all-channels", (data) => {
+        if (this.state.currentChannel === null) {
+            this.setState({
+              channels: data.channels,
+              currentChannel: data.channels.find(el => el.channelName === 'General'),
+              online: data.online,
+              usersOnline: [...data.usersOnline],
+              userId: data.clientId,
+          })
+        } else {
+            this.setState(prev =>({
+              channels: data,
+              currentChannel: data.find(el => prev.currentChannel._id === el._id),
+          }))
+        }
+    })
 
     window.socket.on("change-online", (online) => {
       this.setState({
@@ -169,14 +180,14 @@ class App extends Component {
         })
     })
     window.socket.on("get-user-name", (usersOnline) => {
+      // console.log(usersOnline)
       this.setState({
-        usersOnline: [...usersOnline]
+        usersOnline: usersOnline
       })
     })
 
     window.socket.on('registration-on-DB', (message) => {
       if(message.message === 'User created') {
-        // console.log(message)
         let obj = {}
         // let obj = {...message.currentUser, avatar:`data:image/jpeg;base64,${message.currentUser.avatar}`}
         if (message.currentUser.avatar) {
@@ -193,8 +204,8 @@ class App extends Component {
           error: '',
           email: '',
           password: '',
+          currentChannel: this.state.channels.find(el => el.channelName === 'General')
       }, this.onClick)
-      // console.log(message)
       } else {
         this.setState({
           error: message.message,
@@ -205,22 +216,21 @@ class App extends Component {
       if (message.message === 'User login success') {
         // console.log(message.currentUser)
         let obj = {}
-        if (message.currentUser.avatar) {
-          // console.log('exist')
-          obj = {...message.currentUser, avatar:`data:image/jpeg;base64,${message.currentUser.avatar}`}
-        } else {
-          // console.log('noooooo exist')
-          obj = message.currentUser
-        }
-
+          if (message.currentUser.avatar) {
+            // console.log('exist')
+            obj = {...message.currentUser, avatar:`data:image/jpeg;base64,${message.currentUser.avatar}`}
+          } else {
+            // console.log('noooooo exist')
+            obj = message.currentUser
+          }
         this.setState({
           currentUser: obj,
           // user: message.currentUser.username,
           error: '',
           email: '',
           password: '',
+          currentChannel: this.state.channels.find(el => el.channelName === 'General')
         }, this.onClick)
-        // console.log(message.message)
       } else{
         this.setState({
           error: message.message,
@@ -230,19 +240,28 @@ class App extends Component {
 
     window.socket.on('user-avatar-was-edited', (obj) => {
       // console.log('Its obj!!', obj)
-      let gg = {...obj, avatar:`data:image/jpeg;base64,${obj.avatar}`}
+      let newObj = {...obj, avatar:`data:image/jpeg;base64,${obj.avatar}`}
       // console.log(gg)
       this.setState({
-        currentUser: gg,
+        currentUser: newObj,
       })
+    })
+
+    window.socket.on("channel-created", (obj) => {
+      console.log(obj)
+      this.setState({
+        currentChannel: obj,
+      })
+    })
+
+    window.socket.on('channel-message-save', () => {
+      console.log('succses!!!')
     })
   }
 
-  componentDidUpdate(){
-  }
 
   render() {
-     const {email} = this.state
+     const {email, channels} = this.state
     return (
   
       <div className="App">
@@ -252,7 +271,7 @@ class App extends Component {
 
           <Route path='/registration' render={(props) => <Registration {...props} closeModal={this.onClick} user={this.state.user} password={this.state.password} handlerChange={this.handlerChange} error={this.state.error} registration={this.registrationToChat} reset={this.resetFields} email={email}/>}/>
 
-          <Route exact path='/' render={(props) => <Main users={this.state.allUsers} user={this.state.currentUser.username} onlineUsers={this.state.usersOnline} online={this.state.online} messages={this.state.messages} currentUser={this.state.currentUser} signOut={this.signOut}/>}/>
+          <Route exact path='/' render={(props) => <Main users={this.state.allUsers} user={this.state.currentUser.username} usersOnline={this.state.usersOnline} online={this.state.online} messages={this.state.messages} currentUser={this.state.currentUser} signOut={this.signOut} channels={channels} currentChannel={this.state.currentChannel} changeCurrentChannel={this.changeCurrentChannel} directMessages={this.directMessages}/>}/>
 
         </Switch>
 

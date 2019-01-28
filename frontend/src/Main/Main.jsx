@@ -48,15 +48,15 @@ sendFile = () => {
 
 
 
-
   render() {
+    //   console.log(this.props.usersOnline)
     return (
         <div className='chatWrapper'>
             <div className = 'userPanelContainer'>
             <UserPanel user={this.props.currentUser} toggleModal={this.toggleModal} users={this.props.users} signOut={this.props.signOut}/>
-            <ChannelPanel users={this.props.users}/>
+            <ChannelPanel users={this.props.users} usersOnline={this.props.usersOnline} channels={this.props.channels} changeCurrentChannel={this.props.changeCurrentChannel} currentChannel={this.props.currentChannel} currentUser={this.props.currentUser} directMessages={this.props.directMessages}/>
             </div>
-            <Chat user={this.props.user} online={this.props.online} messages={this.props.messages} currentUser={this.props.currentUser} allUsers={this.props.users}/> 
+            <Chat user={this.props.user} online={this.props.online} messages={this.props.messages} currentUser={this.props.currentUser} allUsers={this.props.users} currentChannel={this.props.currentChannel}/> 
             
             <Modal open={this.state.modal} onClose={this.toggleModal}>
                 <Modal.Header>Select An Image File</Modal.Header>

@@ -13,10 +13,6 @@ class Channels extends Component {
     modalInputName: '',
   }
 
-  componentDidMount(){
-    this.props.setActiveItemId('General')
-  }
-
   toggleModal = () => {
     this.setState(prev => ({
       showModal: !prev.showModal,

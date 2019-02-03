@@ -8,7 +8,6 @@ class Login extends Component {
   state = {
     email: '',
     password: '',
-    // errors: [{message: 'Server error!!!'}],
   }
 
   handelChange = (e) => {
@@ -30,7 +29,7 @@ class Login extends Component {
 
   render() {
 
-    {this.props.clearInput && this.setState({email: '', password: ''})}
+    // {this.props.clearInput && this.setState({email: '', password: ''})}
 
     return (
       <div className={style.registration_page}>

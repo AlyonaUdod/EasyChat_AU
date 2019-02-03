@@ -66,7 +66,7 @@ class App extends Component {
       } else {
         //почему здесь просто data?
         let currentChannel =  data.find(el => this.props.currentChannel._id === el._id)
-        console.log(currentChannel);
+        // console.log(currentChannel);
         this.props.setAllChannels(data)
         this.props.setCurrentChannel(currentChannel)
       }

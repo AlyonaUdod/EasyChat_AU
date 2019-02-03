@@ -37,14 +37,13 @@ class Messages extends Component {
   }
 
   deleteMessage = (e) => {
-    //не срабатывает при нажатии на иконку, не считывает id
     let id = e.target.id
     console.log(id);
     let obj={
         messageId:id ,
         currentChannel: this.props.currentChannel._id,
     }
-    console.log(obj)
+    // console.log(obj)
      window.socket.emit('deleteChannelMessage', obj)
   }
 
@@ -73,28 +72,27 @@ class Messages extends Component {
             message: message,
             currentChannel: this.props.currentChannel._id
         }
-        console.log(obj)
+        // console.log(obj)
         this.setState({
             message: '',
-            // showEmoji: false,
+            showEmoji: false,
         })
         window.socket.emit("channel-message", obj); 
     } else {
         let editMess = {...this.state.editMessage, content: this.state.message, edited: true}
-        console.log(editMess)
+        // console.log(editMess)
         this.setState(prev =>({
             newMessage: true,
             editMessage: {},
             message: '',
             showEmoji: false,
-            // currentChannel: prev.currentChannel.messages.map(el => el.messageId === editMess.messageId ? editMess : el)
         }))
 
         let obj={
             message: editMess,
             currentChannel: this.props.currentChannel._id,
         }
-        console.log(obj)
+        // console.log(obj)
         window.socket.emit("editChannelMessage", obj);    
     }
   }

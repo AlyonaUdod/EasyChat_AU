@@ -3,7 +3,7 @@ import style from './LinkPanel.module.css';
 import Modal from '../ModalLinkPanel/ModalLinkPanel';
 import linkPanel_figure from '../img/linkPanel_figure.png';
 import linkPanel_add from '../img/linkPanel_add.png';
-import { FaGoogle, FaLinkedinIn, FaFacebookSquare, FaTrello, FaGoogleDrive, FaCalendarAlt, FaEnvelope, FaMusic, FaFileImage, FaTimes } from 'react-icons/fa';
+import { FaGoogle, FaLinkedinIn, FaFacebookSquare, FaTrello, FaGoogleDrive, FaCalendarAlt, FaEnvelope, FaMusic, FaFileImage } from 'react-icons/fa';
 import {connect} from 'react-redux';
 import { MdStar } from "react-icons/md";
 import uuidv4 from 'uuid/v4';
@@ -98,25 +98,6 @@ class LinkPanel extends Component {
     }))
   };
 
-  // addLinkToArr = () => {
-  //   let linksAdd = {
-  //     linkName: this.state.modalInputName,
-  //     url: this.state.modalInputLink,
-  //     iconName: this.state.iconName,
-  //     linkId: uuidv4(),
-  //   }
-  //   this.setState(prev =>({
-  //     links: [...prev.links, linksAdd]
-  //   }));
-  // };
-
-  // deleteLinkFromArr = (e) =>{
-  //   let linkId = e.target.id;
-  //   this.setState(prev =>({
-  //     links: [...prev.links.filter(el => el.linkId !== linkId)],
-  //   }));
-  // };
-
   isFormEmpty = ({modalInputName, modalInputLink, iconName}) => {
     return !modalInputName.length || !modalInputLink.length || !iconName.length;
   }
@@ -140,7 +121,7 @@ class LinkPanel extends Component {
       userEmail: this.props.currentUser.email,
       link: newLinks,
     }
-    console.log(sendToDB);
+    // console.log(sendToDB);
     this.props.updateCurrentUser(newLinks);
     window.socket.emit("user-change-link", (sendToDB)); 
   }
@@ -165,7 +146,7 @@ class LinkPanel extends Component {
   };
 
   render() {
-    const { showModal, modalInputName, modalInputLink, imgActive, links, iconPack } = this.state
+    const { showModal, modalInputName, modalInputLink, imgActive, iconPack } = this.state
     return (
       <div className={this.props.toggleLinkPanel ? style.linkPanel_container : style.linkPanel_container_none}>
         <div className={style.link_height}>
@@ -202,11 +183,7 @@ class LinkPanel extends Component {
 
 function MSTP (state) {
   return {
-      // allChannels: state.allChannels,
-      // allUsers: state.allUsers,
-      // currentChannel: state.currentChannel,
       currentUser : state.currentUser,
-      // clientId : state.clientId,
   }
 }
 

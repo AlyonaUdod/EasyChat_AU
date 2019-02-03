@@ -52,7 +52,7 @@ class Register extends Component {
 
   render() {
 
-    {this.props.clearInput && this.setState({ name: '', email: '', password: '', passwordConfirm: '', error: ''})}
+    // {this.props.clearInput && this.setState({ name: '', email: '', password: '', passwordConfirm: '', error: ''})}
 
     return (
       <div className={style.registration_page}>

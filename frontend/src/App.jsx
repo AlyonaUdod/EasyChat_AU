@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import {Switch, Route, withRouter} from 'react-router-dom';
-// import { connect } from 'react-redux';
-// import Loader from 'react-loader-spinner';
 import Chat from './Chat/Chat';
 import Register from './Register/Register';
 import Login from './Login/Login';
-// import style from './App.module.css';
+
 
 import {connect} from 'react-redux';
 import {setAllChannels} from './redux/actions/allChannelsAction';

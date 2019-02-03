@@ -1,0 +1,156 @@
+.linkPanel_container{
+  min-height: 100vh;
+  background: #273247;
+  width: 100%;
+}
+
+.linkPanel_container_none {
+  min-height: 100vh;
+  background: #273247;
+  width: 6%;
+}
+
+.card {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+  margin-bottom: 0;
+  margin-top: 10px;
+}
+
+.global{
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: auto;
+  color: #1f8efa;
+}
+
+.global:hover{
+  color: #296eb3;
+}
+
+.delete {
+  width: 0.5rem;
+  height: 0.5rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #296eb3;
+  padding: 0.1rem;
+  z-index: 2;
+  padding: 0.3rem;
+}
+
+  .delete:hover {
+    background-color: grey;
+  }
+
+.link_place {
+  position: relative;
+}
+
+/* .svgFalse{
+  border-bottom: 2px solid black;
+} */
+
+.link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 1rem;
+}
+
+.svgLink{
+  box-sizing: border-box;
+  border-bottom: 2px solid red;
+  /* border: 2px solid red; */
+  
+}
+
+.modalInput {
+  font-size: 1rem;
+  min-width: 10rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding: .5rem;
+  border: 1px solid #7b8aa4;
+  border-radius: 0.3rem;
+  display: inline-block;
+  margin-left: 1rem;
+  outline: none;
+  color: #fff;
+  margin: 0;
+  margin-top: 1rem;
+  color: black;
+}
+
+.panel_search{
+  margin-top: 10rem;
+  margin-left: 45%;
+}
+
+.link_height{
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.panel_line{
+  height: 1px;
+  width: 100%;
+}
+
+.icons{
+  height: 90%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+
+.panel_icons{
+  margin-top: 1.5rem;
+  width: 20px;
+}
+
+.panel_add{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10%;
+}
+
+.button {
+  width: 50%;
+  height: 50%;
+  margin: auto;
+}
+
+  .button {
+    cursor: pointer;
+  }
+
+@media (max-width: 767px) {
+  .linkPanel_container{
+    height: 100%;
+    position: absolute;
+    width: 30%;
+    top: 0;
+    right: 0;
+  }
+  .linkPanel_container_none {
+    display: none;
+  }
+  .link {
+    padding-top: 1.8rem;
+  }
+  .delete {
+    padding: 0;
+    width: 1rem;
+    height: 1rem;
+    padding: 0.3rem;
+  }
+}

@@ -1,0 +1,98 @@
+.channelsWrapper h3 {
+    font-size: 1rem;
+    color: #fff;
+    width: 100%;
+    padding: .7rem 10%;
+    box-sizing: border-box;
+}
+
+    .channelTitle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 90%;
+    }
+
+    .channelIcon {
+        color: white;
+        
+    }
+
+    .channelIcon:hover {
+        cursor: pointer;
+        color: #1f8efa;
+    }
+
+    .line {
+        border-top: 1px dashed #7b8aa4;
+        width: 80%;
+        margin: auto;
+    }
+
+    .modalInput {
+        font-size: 1rem;
+        min-width: 10rem;
+        width: 100%;
+        box-sizing: border-box;
+        padding: .5rem;
+        border: 1px solid #7b8aa4;
+        border-radius: 0.3rem;
+        display: inline-block;
+        margin-left: 1rem;
+        outline: none;
+        color: #fff;
+        margin: 0;
+        margin-top: 1rem;
+        color: black;
+    }
+
+    .channelList{
+        width: 90%;
+        height: 10rem;
+        padding: 0 10% 0;
+        box-sizing: border-box;
+        display: flex;
+        align-items: flex-start;
+        list-style: none;
+        flex-direction: column;
+        cursor: pointer;
+        color: #fff;
+        overflow-y: scroll;
+    }
+
+    .channelItem {
+        width: 100%;
+        padding: 0.2rem;
+        color: #7b8aa4;
+    }
+
+    .channelItem:hover {
+        padding: 0.2rem;
+        background-color: #2b7ccd;
+        width: 100%;
+        color: white;
+    }
+
+    .activeItem {
+        color: #fff;
+    }
+
+@media (max-width: 1023px) {
+    .channelsWrapper h3 {
+        font-size: 1rem;
+    }
+
+    .channelItem {
+        font-size: 1rem;
+    }
+
+    .channelList{
+        height: 8rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .channelList{
+        height: 5rem;
+    }
+}

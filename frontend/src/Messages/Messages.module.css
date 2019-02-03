@@ -1,0 +1,159 @@
+.main {
+  background-color: #f9fafb;
+  width: 74%;
+}
+  .headerMain {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 95%;
+    margin: auto;
+    background: white;
+    box-shadow: 0 2px 7px 3px #e9e9e9;
+    margin-bottom: 2rem;
+  }
+    .additionalButton {
+      color: #bac4c9;
+      display: none;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 85%;
+      margin: auto;
+      padding: 1rem 0;
+    }
+    .name {
+      font-size: 1.5rem;
+    }
+    .members {
+      color: #bac4c9;
+      font-size: 1rem;
+    }
+    .headerForm {
+      display: flex;
+      align-items: center;
+    }
+    .searchImg {
+      color: #bac4c9;
+      width: 18px;
+      height: 18px;
+      margin-right: 1rem;
+    }
+    .search {
+      border: none;
+      outline: none;
+    }
+    .search::placeholder {
+      color: #bac4c9;
+      font-style: italic;
+      font-size: 1rem;
+    }
+
+  .messages {
+    width: 95%;
+    margin: auto;
+    box-shadow: 2px 2px 7px 3px #f5f6f7;
+    padding: 2% 0;
+    background-color: #fff;
+  }
+    .messagesArea {
+      height: 65vh;
+      width: 92%;
+      margin: auto;
+      overflow-y: scroll;
+    }
+    .messageForm {
+      position: relative;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: 92%;
+      margin: auto;
+      border: 1px solid #7b8aa4;
+      border-radius: 3px;
+      padding: 0.8% 0;
+    }
+    .addFile {
+      color: #bac4c9;
+      cursor: pointer;
+    }
+    .messageInput {
+      width: 85%;
+      border: none;
+      outline: none;
+      word-wrap: break-word;
+    }
+    .messageInput::placeholder {
+      color: #bac4c9;
+      font-style: italic;
+      font-size: 1rem;
+    }
+    .smile {
+      color: #bac4c9;
+      width: 27px;
+      height: 27px;
+      cursor: pointer;
+    }
+    .send {
+      color: #1f8efa;
+      width: 32px;
+      height: 28px;
+      cursor: pointer;
+    }
+  .emoji {
+    position: absolute;
+    right: -1rem;
+    bottom: 2rem;
+  }
+
+@media (max-width: 1023px) {
+  .name {
+    font-size: 1rem;
+  }
+  .smile {
+    display: none;
+  }
+  .emoji {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .main {
+    width: 100%;
+  }
+  .header {
+    width: 50%;
+    padding: 0;
+  }
+    .headerForm {
+      width: 60%;
+    }
+    .name {
+      font-size: 0.7rem;
+    }
+    .members {
+      color: #bac4c9;
+      font-size: .7rem;
+    }
+    .messageInput::placeholder {
+      font-size: 0.5rem;
+    }
+    .search {
+      width: 80%;
+    }
+  .additionalButton {
+    display: block;
+    margin: 1rem;
+    width: 2.6rem;
+    height: 2.6rem;
+  }
+  .smile {
+    display: none;
+  }
+  .emoji {
+    display: none;
+  }
+}

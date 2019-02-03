@@ -1,0 +1,102 @@
+/* roboto-300 - latin */
+@font-face {
+  font-family: 'gotham';
+  font-style: normal;
+  /* font-weight: 300; */
+  src: local('gotham pro black'), local('gotham pro black'),
+    url('./fonts/Gotham_pro/gotham\ pro\ black.ttf') format('ttf'), /* Super Modern Browsers */
+    /* url('../fonts/roboto-v18-latin-300.woff') format('woff'); Modern Browsers */
+}
+
+/* roboto-regular - latin */
+@font-face {
+  src: local('gotham pro bold'), local('gotham pro bold'),
+  url('./fonts/Gotham_pro/gotham\ pro\ bold.otf') format('otf'); /* Super Modern Browsers */
+   font-family: 'gotham';
+  font-style: normal;
+  /* font-weight: 400; */
+}
+
+/* roboto-700 - latin */
+@font-face {
+  font-family: 'gotham';
+  font-style: normal;
+  /* font-weight: 700; */
+  src: local('gotham pro light'), 
+    url('./fonts/Gotham_pro/gotham\ pro\ light.ttf') format('ttf'); /* Super Modern Browsers */
+    
+}
+
+/* kaushan-script-regular - latin */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  /* font-weight: 400; */
+  src: local('Ubuntu-Bold'),
+    url('./fonts/Ubuntu/Ubuntu-Bold.ttf') format('ttf'); /* Super Modern Browsers */
+    
+}
+
+/* montserrat-300 - latin */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  /* font-weight: 300; */
+  src: local('Ubuntu-BoldItalic'), 
+    url('./fonts/Ubuntu/Ubuntu-BoldItalic.ttf') format('ttf'); /* Super Modern Browsers */
+    
+}
+  
+/* montserrat-regular - latin */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  /* font-weight: 400; */
+  src: local('Ubuntu-Italic'), 
+    url('./fonts/Ubuntu/Ubuntu-Italic.ttf') format('ttf'); /* Super Modern Browsers */
+    }
+  
+/* montserrat-500 - latin */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Ubuntu-Light'),
+    url('./fonts/Ubuntu/Ubuntu-Light.ttf') format('ttf'); /* Super Modern Browsers */
+   
+
+}
+
+/* montserrat-700 - latin */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  /* font-weight: 700; */
+  src: local('Ubuntu-LightItalic'), 
+    url('./fonts/Ubuntu/Ubuntu-LightItalic.ttf') format('ttf'); /* Super Modern Browsers */
+    
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  /* font-weight: 700; */
+  src: local('Ubuntu-Medium'), 
+    url('./fonts/Ubuntu/Ubuntu-Medium.ttf') format('ttf'); /* Super Modern Browsers */
+    
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  /* font-weight: 700; */
+  src: local('Ubuntu-MediumItalic'), 
+    url('./fonts/Ubuntu/Ubuntu-MediumItalic.ttf') format('ttf'); /* Super Modern Browsers */
+    
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  /* font-weight: 700; */
+  src: local('Ubuntu-Regular'), 
+    url('./fonts/Ubuntu/Ubuntu-Regular.ttf') format('ttf'); /* Super Modern Browsers */
+    
+}

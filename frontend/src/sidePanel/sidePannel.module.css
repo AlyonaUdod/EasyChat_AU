@@ -1,0 +1,51 @@
+.sidePanel {
+    background-color: #273247;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+.sidePanelNone {
+    background-color: #273247;
+    margin: 0;
+    padding: 0;
+    width: 20%;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+.title {
+    text-align: center;
+    margin-top: 1rem;
+    color: #1f8efa;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+@media (max-width: 1023px) {
+    .title {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .sidePanel {
+        width: 70%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    .sidePanelNone {
+        display: none;
+    }
+    .title {
+        font-size: 1.5rem;
+    }
+}

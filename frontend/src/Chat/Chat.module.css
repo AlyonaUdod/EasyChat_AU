@@ -1,0 +1,32 @@
+.chat {
+  display: flex;
+}
+.none {
+  display: none;
+}
+/* 
+.wraperLinkPanel {
+  width: 6%;
+  min-height: 100vh;
+} */
+
+@media (max-width: 767px) {
+
+  .divCloseSidePanel {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 30%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .divCloseLinkPanel {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 70%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}

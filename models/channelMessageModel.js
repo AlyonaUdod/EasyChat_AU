@@ -6,6 +6,7 @@ let messageSchema = new Schema({
   content: String,
   time: Number,
   messageId: String,
+  edited: Boolean,
   addAt: {type: Date, default: Date.now}
 });
 

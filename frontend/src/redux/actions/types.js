@@ -1,0 +1,27 @@
+// All Channels
+
+export const SET_ALL_CHANNELS = 'SET_ALL_CHANNELS';
+export const REMOVE_ALL_CHANNELS = 'REMOVE_ALL_CHANNELS';
+export const UPDATE_ALL_CHANNELS = 'UPDATE_ALL_CHANNELS';
+
+// All Users
+
+export const SET_ALL_USERS = 'SET_ALL_USERS';
+export const REMOVE_ALL_USERS = 'REMOVE_ALL_USERS';
+export const UPDATE_ALL_USERS = 'UPDATE_ALL_USERS';
+
+// Current Channel 
+
+export const SET_CURRENT_CHANNEL = 'SET_CURRENT_CHANNEL';
+export const REMOVE_CURRENT_CHANNEL = 'REMOVE_CURRENT_CHANNEL';
+export const UPDATE_CURRENT_CHANNEL = 'UPDATE_CURRENT_CHANNEL';
+
+// Current User
+
+export const SET_CURRENT_USER = 'SET_CURRENT_USER';
+export const REMOVE_CURRENT_USER = 'REMOVE_CURRENT_USER';
+export const UPDATE_CURRENT_USER = 'UPDATE_CURRENT_USER';
+
+// client ID 
+
+export const SET_CLIENT_ID = 'SET_CLIENT_ID'

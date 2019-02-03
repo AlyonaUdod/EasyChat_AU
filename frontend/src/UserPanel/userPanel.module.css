@@ -1,0 +1,76 @@
+.wrapper {
+    width: 95%;
+    padding: 5%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+    .avatarAndUsername {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .avatar {
+        border-radius: 100%;
+        width: 3rem;
+        height: 3rem;
+    }
+    .userName {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #fff;
+        text-align: right;
+        margin-left: .5rem;
+    }
+    .dropdownBtn {
+        color: white;
+        width: 100%;
+    }
+    .dropdownBtn:hover {
+        color: #1f8efa;
+        cursor: pointer;
+    }
+    .dropdownWrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+    .dropdownList {
+        position: absolute;
+        background: #f9fafb;
+        color: white;
+        width: 11rem;
+        transform: translate(-85%, 70%);
+        /* transform: translateY(60%); */
+    }
+    .dropdownList span {
+        color: black;
+        padding: 0.4rem 0.5rem;
+        text-decoration: none;
+        display: block;
+        cursor: pointer;
+    }
+    .dropdownList span:hover {
+        background: #2c7dce;
+    }
+    .previewBloack {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding-top: .7rem;
+    }
+    .prevImg {
+        border-radius: 50%;
+        width: 10rem;
+        height: 10rem;
+    }
+@media (max-width: 1023px) {
+    .avatar {
+        width: 2rem;
+        height: 2rem;
+    }
+    .userName {
+        font-size: 1rem;
+    }
+}

@@ -1,3 +1,12 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+* ::-webkit-scrollbar { width: 3px;}
+     ::-webkit-scrollbar-track-piece { background-color: transparent;}
+     ::-webkit-scrollbar-thumb { height: 50px; background-color: #1f8efa; border-radius: 100%;}
+
 body {
   margin: 0;
   padding: 0;
@@ -6,9 +15,4 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
 }

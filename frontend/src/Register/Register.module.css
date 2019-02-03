@@ -1,0 +1,141 @@
+.registration_page {
+    background-image: url(../img/registration.jpg);
+    background-size: 60% 100%; 
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.form_place {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    margin-right: 3%;
+}
+
+    .emblema {
+        text-align: center;
+        margin-bottom: 1rem;
+        font-size: 3rem;
+        color: #1f8efa;
+    }
+
+    .form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .div_input {
+        border: 1px solid #bac4c9;
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-radius: 0.3rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .icon_input {
+        color: #bac4c9;
+        margin-right: 3%;
+    }
+
+    .input {
+        border: none;
+        outline: none;
+        font-size: 1rem;
+    }
+
+        .input::placeholder {
+            font-style: italic;
+            color: #bac4c9;
+            font-size: 1rem;
+        }
+
+    .submit_btn {
+        background-color: #1f8efa;
+        color: white;
+        border: none;
+        border-radius: 0.3rem;
+        padding: 1rem;
+        font-size: 1rem;
+        font-weight: 700;
+        box-shadow: 0px 3px 15px -1px rgba(31,140,250,0.5);
+    }
+
+        .submit_btn:hover {
+            cursor: pointer;
+        }
+
+    .subtitle {
+        text-align: center;
+        margin-top: 1rem;
+        font-size: 1rem;
+        color: grey;
+    }
+
+        .subtitle_navlink {
+            color: #1f8efa;
+            font-style: italic;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+    
+    .error {
+        text-align: center;
+        margin-top: 1rem;
+        font-size: 1rem;
+        color: rgb(212, 25, 25);
+        font-weight: bold;
+    }
+
+@media (max-width: 1023px) {
+
+    .form_place {
+        width: 35%;
+        margin-right: 0;
+    }
+    
+        .emblema {
+            font-size: 2rem;
+        }
+
+        .div_input {
+            padding: .7rem;
+        }
+      
+        .input {
+            font-size: .7rem;
+        }
+    
+            .input::placeholder {
+                font-size: .7rem;
+            }
+    
+        .submit_btn {
+            font-size: .7rem;
+        }
+    
+        .subtitle {
+            font-size: .7rem;
+        }
+    
+            .subtitle_navlink {
+                font-size: .7rem;
+            }
+}
+
+@media (max-width: 767px) {
+    .registration_page {
+        background: none;
+        padding: 2rem;
+    }
+    
+    .form_place {
+        width: 95%;
+        margin: auto;
+    }
+}

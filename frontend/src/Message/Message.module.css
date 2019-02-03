@@ -1,0 +1,25 @@
+/* .cardLeft {
+    margin-bottom: 10px;
+    width: 100%;
+    display: flex;
+} */
+
+/* .cardRight {
+    margin-bottom: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+} */
+
+.message_avatar {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 100%;
+}
+
+@media (max-width: 767px) {
+    .message_avatar {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+}

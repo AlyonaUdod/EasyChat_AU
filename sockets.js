@@ -5,7 +5,9 @@ const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 // const cookieParser = require('cookie-parser');
-const config = require('./config')
+const config = require('./config');
+// const socketioJwt = require('socketio-jwt');
+const socketioJwt = require('socketio-jwt');
 
 // function auth (socket, next) {
 //     // Parse cookie
@@ -29,66 +31,88 @@ function createToken (body) {
     );
 }
 
-function checkAuth (client, next) {
-    passport.authenticate('jwt', { session: false }, (err, decryptToken, jwtError) => {
-        if(jwtError != void(0) || err != void(0)) return 'Some error!!!!';
-        client.user.decryptToken = decryptToken;
-        next();
-    })(client, next);
+function checkAuth (client) {
+    // console.log('bbb')
+
+    let decoder = jwt.decode(client)
+    console.log(decoder)
+
+    // passport.authenticate('jwt', { session: false }, function(err, decryptToken, jwtError) {
+    //     // console.log(decryptToken)
+    //     if(!err && !jwtError && decryptToken) {
+    //         console.log('ccc')
+    //         console.log(decryptToken)
+    //         return 'Some error!!!!';
+    //     } else {
+    //         console.log('eeee')
+    //         let _id = decryptToken.id;
+    //         let a = {username: decryptToken.username, id: decryptToken.id}
+    //         console.log('its decr token', a)  
+    //         return _id
+    //     }
+      
+    // })(client);
 }
 
 
-let online = 0;
+let online = 0; 
 let usersOnline = [];
 let message = {};
+let channels = [];
+let users = [];
 
 module.exports = io => {
+    // io.use(
+    //     socketioJwt.authorize({
+    //         secret: config.jwt.secretOrKey,
+    //         // handshake: true,
+    //     })
+    // );
     io.on('connection', (client) => {   
 
-        client.on('new-user', () => {
-            console.log("User connected");
-            console.log(++online); 
-            client.broadcast.emit("change-online", online)
-    
-            let allUsers = User.find()
-            allUsers.lean().exec(function(err,data) {
-                if (err) throw err;
-                client.emit('all-users', data)
-            })
+        // console.log('aaaaa', client.handshake.query.decoded_tocken.username);
+       
+        // let token = client.handshake.query.decoded_tocken;
+        // console.log('aaaaa', token)
+        // checkAuth(token)
 
+     
+        client.on('new-user', () => {
+            let allUsers = User.find()
+                allUsers.lean().exec(function(err,docs2) {
+                    if (err) throw err;
+                    return users = docs2
+                })
+                
             let allChannels = Channel.find()
-            allChannels.lean().exec(function(err,data) {
-                console.log(client.id)
-                if (err) throw err;
-                let obj ={
-                    channels: data,
-                    online: online,
-                    usersOnline: usersOnline,
-                    clientId: client.id,
-                }
-                client.emit('all-channels', obj)
-            })
+                allChannels.lean().exec(function(err,data) {
+                    if (err) throw err;
+                    return channels = data
+                })
+            client.emit('client-id', client.id)
         })
         client.on('send-user-name-to-online-DB', (user) => {
             usersOnline.push(user)
             console.log(usersOnline)
-            io.emit('get-user-name', usersOnline)
+            io.emit('send-users-online', usersOnline)
         })
         client.on("disconnect", () => {
-            let arr = usersOnline.filter(el => el.userId !== client.id)
+            let arr = usersOnline.filter(el => el.clientId !== client.id)
             usersOnline = arr
             console.log(online > 0 ? --online : null);
             console.log(`Now in chat ${online} users.`); 
             client.broadcast.emit("change-online", online);
-            io.emit('get-user-name', usersOnline)
+            console.log(usersOnline)
+            io.emit('send-users-online', usersOnline)
         });
         client.on('user-sign-out', (id) => {
-            let arr = usersOnline.filter(el => el.userId !== id)
+            let arr = usersOnline.filter(el => el.clientId !== id)
             usersOnline = arr
             console.log(online > 0 ? --online : null);
             console.log(`Now in chat ${online} users.`); 
             client.broadcast.emit("change-online", online);
-            io.emit('get-user-name', usersOnline)
+            console.log(usersOnline)
+            io.emit('send-users-online', usersOnline)
         })
         // client.on("typing", (data) => {
         //     console.log(data)
@@ -136,22 +160,36 @@ module.exports = io => {
        })
         client.on('registration', async(user) => {
             try {
-                let userDB = await User.findOne({email: user.email}).lean().exec();
-                if(userDB != void(0)) {
+                let userDb = await User.findOne({email: user.email}).lean().exec();
+                if(userDb != void(0)) {
                     message = {message: "User already exist"} 
                     client.emit('registration-on-DB', message);
                 } else {
-                   userDB = await User.create({
+                   userDb = await User.create({
                         username: user.username,
                         password: user.password,
                         email: user.email,
+                        links: user.link,
                     });  
-                    const token = createToken({id: userDB._id, username: userDB.username});
+                    const token = createToken({id: userDb._id, username: userDb.username});
                     // client.cookie('token', token, {
                     //     httpOnly: true
                     // });
-                    message = {message: "User created", currentUser: userDB};
+
+                    console.log("User connected");
+                    console.log(++online); 
+                    client.broadcast.emit("change-online", online)
+
+                    message = {
+                        message: "User created", 
+                        currentUser: userDb, 
+                        allUsers: users, 
+                        allChannels: channels,
+                        online: online,
+                        clientId: client.id,
+                    };
                     client.emit('registration-on-DB', message);
+
                     let allUsers = User.find()
                     allUsers.lean().exec(function(err,docs2) {
                         if (err) throw err;
@@ -172,20 +210,29 @@ module.exports = io => {
                     // res.cookie('token', token, {
                     //     httpOnly: true
                     // });
-                    message = {message: "User login success", currentUser: userDb};
+                    client.emit('cookie', token)
+
+                    console.log("User connected");
+                    console.log(++online); 
+                    client.broadcast.emit("change-online", online)
+
+                    message = {
+                        message: "User login success", 
+                        currentUser: userDb, 
+                        allUsers: users, 
+                        allChannels: channels,
+                        online: online,
+                        clientId: client.id,
+                        token: token,
+                    };
                     client.emit('login-on-DB', message);
                     
-                    let allUsers = User.find()
-                    allUsers.lean().exec(function(err,docs2) {
-                        if (err) throw err;
-                        io.emit('all-users', docs2)
-                    })
-                } else if (userDb == void(0)) {
-                    message = {message: "User not exist"};
+                } else if (userDb == void(0) || userDb != void(0) && !bcrypt.compareSync(user.password, userDb.password)) {
+                    message = {message: "User not exist or password false"};
                     client.emit('login-on-DB', message);
-                } else if (userDb != void(0) && !bcrypt.compareSync(user.password, userDb.password)) {
-                    message = {message: "Password false, try again"};
-                    client.emit('login-on-DB', message);
+                // } else if (userDb != void(0) && !bcrypt.compareSync(user.password, userDb.password)) {
+                //     message = {message: "Password false, try again"};
+                //     client.emit('login-on-DB', message);
                 }
             } catch (e) {
                 console.error("E, login,", e);
@@ -205,7 +252,6 @@ module.exports = io => {
                     })
                     User.findOne({_id: obj.id}).lean().exec(function(err,user) {
                         if (err) throw err;
-                        console.log('aaa')
                         client.emit("user-avatar-was-edited", user)
                     })
                 }  
@@ -216,6 +262,7 @@ module.exports = io => {
                 if(err) return console.error(err);
                 console.log('Channel create!')
                 client.emit("channel-created", data);
+
                 let allChannels = Channel.find()
                 allChannels.lean().exec(function(err,docs3) {
                     if (err) throw err;
@@ -243,5 +290,14 @@ module.exports = io => {
                 console.log(err)
             })
         });
+        client.on("user-change-link", (sendToDB) =>{
+            User.findOneAndUpdate({
+                email: sendToDB.userEmail
+            }, {links:sendToDB.link})
+        .catch(error => {
+            console.log(error);
+        })
+        client.emit('Link_added')
+        })
     });
 };

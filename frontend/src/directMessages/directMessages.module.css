@@ -1,0 +1,77 @@
+.directMessagesWrapper h4{
+    font-size: 1rem;
+    color: #fff;
+    width: 100%;
+    padding: .7rem 10%;
+    box-sizing: border-box;
+}
+
+.line {
+    border-top: 1px dashed #7b8aa4;
+    width: 80%;
+    margin: auto;
+}
+
+.directMessagesList {
+    width: 90%;
+    height: 15rem;
+    padding: 0 10% 0;
+    box-sizing: border-box;
+    list-style: none;
+    cursor: pointer;
+    color: #fff;
+    overflow-y: scroll;
+}
+
+.directMessagesItem {
+    width: 100%;
+    padding: 0.2rem;
+    color: #7b8aa4;
+    display: flex;
+    align-items: center;
+}
+
+.directMessagesItem:hover {
+    padding: 0.2rem;
+    background-color: #2b7ccd;
+    width: 100%;
+    color: white;
+}
+
+.activeItem {
+    color: #fff;
+}
+
+.pName_plus_avatar {
+    width: 100%;
+    margin-left: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.avatar {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 100%;
+    margin-left: 0.5rem;
+}
+
+@media (max-width: 1023px) {
+    .directMessagesWrapper h4{
+        font-size: 1rem;
+    }
+
+    .directMessagesItem {
+        font-size: 1rem;
+    }
+    .directMessagesList {
+        height: 14rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .directMessagesList {
+        height: 9rem;
+    }
+}

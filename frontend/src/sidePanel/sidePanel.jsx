@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import style from './sidePannel.module.css';
-import UserPanel from '../userPanel/userPanel';
+import UserPanel from './userPanel';
 import Channels from '../channels/channels';
 import DirectMessages from '../directMessages/directMessages';
 

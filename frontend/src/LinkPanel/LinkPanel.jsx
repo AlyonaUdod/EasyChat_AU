@@ -151,16 +151,15 @@ class LinkPanel extends Component {
       <div className={this.props.toggleLinkPanel ? style.linkPanel_container : style.linkPanel_container_none}>
         <div className={style.link_height}>
           <div className={style.icons}>
-            {this.props.currentUser.links.map(el => 
+            {this.props.currentUser.links.length > 0 ? this.props.currentUser.links.map(el => 
               <div key={el.linkId} className={style.link_place}>
                <a className={style.link} title={el.linkName} href={el.url} target='_blank' rel="noopener noreferrer">
                 {iconPack.find(item => item.iconName === el.iconName).url}
                 </a>
                 <img id={el.linkId} onClick={this.deleteUserLink} className={style.delete} src={deleteIcon} alt="deleteIcon"/>
-                <img className={style.panel_line} src={linkPanel_figure} alt="figure" />
+                <img className={style.panel_line} src={linkPanel_figure} alt="figure"/>
               </div>
-            )}
-
+            ): null}
           </div>
           <div className={style.panel_add} onClick={this.toggleModal}>
             <img src={linkPanel_add} alt="add" className={style.button}/>

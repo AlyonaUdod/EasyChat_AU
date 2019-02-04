@@ -64,7 +64,7 @@ class DirectMessages extends Component {
 
           <p className={style.pName_plus_avatar} id={el.email} onClick={this.directMessages}>
             {el.username}
-            <img className={style.avatar} id={el.email} src={el.avatar ? el.avatar : `http://gravatar.com/avatar/${md5(el.username)}?d=identicon`} alt="avatar"/>
+            <img className={style.avatar} id={el.email} src={el.avatar ? el.avatar : `https://gravatar.com/avatar/${md5(el.username)}?d=identicon`} alt="avatar"/>
           </p>
           </li>)}
         </ul>

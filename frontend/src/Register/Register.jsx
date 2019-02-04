@@ -38,7 +38,7 @@ class Register extends Component {
             linkId: uuidv4()
         }
         }
-        console.log(user)
+        // console.log(user)
         this.setState({
           error: ''
         })

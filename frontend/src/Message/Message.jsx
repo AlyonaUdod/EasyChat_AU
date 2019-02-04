@@ -13,7 +13,7 @@ class Message extends Component {
             return <img className={styles.message_avatar} src={user.avatar} alt='user avatar'/>
         }
         else {     
-            let userSrc = `http://gravatar.com/avatar/${md5(`${user.username}`)}?d=identicon`
+            let userSrc = `https://gravatar.com/avatar/${md5(`${user.username}`)}?d=identicon`
             return <img className={styles.message_avatar} src={userSrc} alt='user avatar'/>
         }
     }

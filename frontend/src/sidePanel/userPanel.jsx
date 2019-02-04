@@ -89,7 +89,7 @@ class UserPanel extends Component {
         return (
             <div className={style.wrapper}>
                 <div className={style.avatarAndUsername}>
-                    <img className={style.avatar} src={currentUser.avatar ? currentUser.avatar : `http://gravatar.com/avatar/${md5(currentUser.username)}?d=identicon`} alt='avatar' />
+                    <img className={style.avatar} src={currentUser.avatar ? currentUser.avatar : `https://gravatar.com/avatar/${md5(currentUser.username)}?d=identicon`} alt='avatar' />
                     <span className={style.userName}>{currentUser.username}</span>
                 </div>
                 <div className={style.dropdownWrapper}>

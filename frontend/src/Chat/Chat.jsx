@@ -60,7 +60,7 @@ class Chat extends Component {
             }
         }  
         window.socket.on("channel-created", (obj) => {
-            console.log(obj)
+            // console.log(obj)
            this.props.setCurrentChannel(obj)
         })
     }

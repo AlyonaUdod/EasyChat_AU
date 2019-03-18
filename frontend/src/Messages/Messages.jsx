@@ -9,10 +9,6 @@ import {connect} from 'react-redux';
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker } from 'emoji-mart';
 
-// import {setAllUsers, removeAllUsers,updateAllUsers} from '../redux/actions/allUsersAction';
-// import {setCurrentChannel} from '../redux/actions/currentChannelAction';
-// import {setCurrentUser} from '../redux/actions/currentUserAction';
-
 
 class Messages extends Component {
 
@@ -38,18 +34,16 @@ class Messages extends Component {
 
   deleteMessage = (e) => {
     let id = e.target.id
-    console.log(id);
+    // console.log(id);
     let obj={
         messageId:id ,
         currentChannel: this.props.currentChannel._id,
     }
-    // console.log(obj)
      window.socket.emit('deleteChannelMessage', obj)
   }
 
   editMessage = (e) => {
       let id = e.target.id
-      // let message = this.state.messages.find(el => el.messageId === id)
       let edit = this.props.currentChannel.messages.find(el => el.messageId === id)
       this.setState({
           message: edit.content,
@@ -72,7 +66,6 @@ class Messages extends Component {
             message: message,
             currentChannel: this.props.currentChannel._id
         }
-        // console.log(obj)
         this.setState({
             message: '',
             showEmoji: false,
@@ -80,7 +73,6 @@ class Messages extends Component {
         window.socket.emit("channel-message", obj); 
     } else {
         let editMess = {...this.state.editMessage, content: this.state.message, edited: true}
-        // console.log(editMess)
         this.setState(prev =>({
             newMessage: true,
             editMessage: {},
@@ -92,7 +84,6 @@ class Messages extends Component {
             message: editMess,
             currentChannel: this.props.currentChannel._id,
         }
-        // console.log(obj)
         window.socket.emit("editChannelMessage", obj);    
     }
   }
@@ -161,7 +152,11 @@ class Messages extends Component {
 				message: prev.message + emojiPic
 			}))
 		}
-	}
+  }
+  
+  formSubmit = (e) => {
+    e.preventDefault()
+  }
 
   render() {
 

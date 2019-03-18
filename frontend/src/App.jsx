@@ -90,9 +90,14 @@ class App extends Component {
 
     window.socket.on('login-on-DB', (data) => {
       if (data.message === 'User login success') {
-
       this.props.history.push('/')
-      this.setDataToRedux(data)
+      // this.setDataToRedux(data)
+      this.func(data)
+      .then(res => this.props.setCurrentChannel(res))
+      .then(() => this.props.setAllUsers(data.allUsers))
+      .then(() => this.props.setAllChannels(data.allChannels))
+      .then(() => this.props.setCurrentUser(data.currentUser))
+      .then(() => this.setDataToRedux())
         } else {
           this.setState({
             error: data.message,
@@ -125,15 +130,29 @@ class App extends Component {
       })
   }
 
-  setDataToRedux = async(data) => {
+  func = (data) => {
+    let a = new Promise((res, req) => {
+      let currentChannel = data.allChannels.find(el => el.channelName === 'General')
+      if(currentChannel){
+        res(currentChannel)
+      } else {
+        req('new error')
+      }
+    })
+    return a
+  }
+
+  setDataToRedux = () => {
     // console.log(data)
     // this.createCookie('token', data.token);
-    let currentChannel = data.allChannels.find(el => el.channelName === 'General')
+  
+    
+    // let currentChannel = data.allChannels.find(el => el.channelName === 'General')
 
-    await this.props.setAllChannels(data.allChannels)
-    await this.props.setAllUsers(data.allUsers)
-    await this.props.setCurrentChannel(currentChannel)
-    await this.props.setCurrentUser(data.currentUser)
+    // await this.props.setAllChannels(data.allChannels)
+    // await this.props.setAllUsers(data.allUsers)
+    // await this.props.setCurrentChannel(currentChannel)
+    // await this.props.setCurrentUser(data.currentUser)
 
     this.setState({
       error: '',
@@ -143,7 +162,6 @@ class App extends Component {
       userEmail: this.props.currentUser.email,
       clientId: this.props.clientId,
     }
-    // console.log(obj)
     window.socket.emit('send-user-name-to-online-DB', obj)
   }
 
